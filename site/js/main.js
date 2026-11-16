@@ -237,7 +237,7 @@ if (!stage) {
     const tv = i === 0 ? 1 - smooth((t - 0.2) / 0.16) : 0;
     teaser.style.opacity = (tv * intro.f).toFixed(3); teaser.style.transform = `scale(${(1 + (i === 0 ? t : 1) * 0.5).toFixed(4)})`; teaser.style.visibility = tv > 0.001 ? 'visible' : 'hidden';
     if (tv > 0.001 && teaser.paused && entered) teaser.play().catch(() => {}); else if (tv <= 0.001 && !teaser.paused) teaser.pause();
-    if (tv < 0.999) { stage.view(sc.id, t, look); stage.render(time, fade); }
+    if (tv * intro.f < 0.999) { stage.view(sc.id, t, look); stage.render(time, fade); }
     beats.forEach((list, j) => list.forEach(b => b.el.classList.toggle('on', entered && j === i && t >= b.a && t < b.b && fade > 0.55)));
     const busy = !$('#scrim').hidden || !$('#menu').hidden;
     for (const h of hots) {

@@ -9,7 +9,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 fill=%27%230b0d14%27/%3E%3Crect x=%277%27 y=%277%27 width=%2718%27 height=%2718%27 fill=%27%23f4d873%27 transform=%27rotate(-6 16 16)%27/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600;700&family=Caveat:wght@500;700&family=Courier+Prime:wght@400;700&family=Permanent+Marker&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600;700&family=Caveat:wght@500;700&family=Courier+Prime:wght@400;700&family=Permanent+Marker&family=Reenie+Beanie&display=swap">
 <link rel="stylesheet" href="css/panels.css">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/cine.css">
@@ -17,13 +17,27 @@
 </head>
 <body class="booting">
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <!-- trazo de lápiz: bordes irregulares para el texto y los dibujos de los post-its -->
+  <filter id="lapiz" x="-5%" y="-20%" width="110%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.6"/></filter>
+</svg>
+
 <div id="loader" role="status" aria-live="polite">
-  <p class="loader-title">Yo, Emilia</p>
-  <p class="loader-line" id="loaderLine">Preparando el set</p>
-  <div class="loader-bar"><i id="loaderBar"></i></div>
-  <div class="loader-go" id="loaderGo" hidden>
-    <button class="act" type="button" data-enter="1">Entrar con sonido</button>
-    <button class="act ghost" type="button" data-enter="0">Entrar en silencio</button>
+  <div class="loader-in">
+    <p class="loader-kicker">Proyecto transmedia<i></i>2026</p>
+    <h1 class="loader-title"><img src="img/titulo.png" alt="Yo, Emilia" width="1140" height="400"></h1>
+    <p class="loader-line" id="loaderLine">Preparando el set</p>
+    <div class="loader-bar"><i id="loaderBar"></i></div>
+    <div class="loader-go" id="loaderGo" hidden>
+      <button class="postit" type="button" data-enter="1">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M8 24v-4a12 12 0 0 1 24 0v4"/><rect x="5" y="23" width="7" height="11" rx="2.5"/><rect x="28" y="23" width="7" height="11" rx="2.5"/></svg>
+        <span>Entrar con sonido</span>
+      </button>
+      <button class="postit azul" type="button" data-enter="0">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M7 16h6l8-7v22l-8-7H7z"/><path d="M27 15l8 10M35 15l-8 10"/></svg>
+        <span>Entrar en silencio</span>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -48,7 +62,7 @@
   <section class="scene" id="inicio" aria-label="Inicio">
     <div class="beat title" data-a="0" data-b="0.3">
       <p class="label">Teaser, en bucle y sin sonido</p>
-      <h1>Yo, Emilia</h1>
+      <h1 class="brush-title"><img src="img/titulo.png" alt="Yo, Emilia" width="1140" height="400"></h1>
       <p class="lema">El rechazo no es el final de la historia.</p>
       <a class="note n-y paste" href="#archivo" data-goto="archivo">¿Acabas de ver el corto?<br>Esto es lo que no te contamos.<br>Entra al cuarto de Emilia</a>
       <p class="scroll-cue"><span></span>Baja para entrar al universo</p>
