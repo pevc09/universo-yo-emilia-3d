@@ -1,4 +1,4 @@
-// Escenario: renderer, luces compartidas, cámara sobre rieles y corrección de color.
+// Escenario: renderer, luces compartidas, cámara sobre rieles y corrección de color de cine.
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -9,37 +9,43 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { calle, cafeteria, restaurante } from './spaces-a.js';
 import { cineclub, cuarto, melon } from './spaces-b.js';
+import { dress } from './spaces-c.js';
 import { CAST, CHAPTERS, SEED_NOTES } from './data.js';
 
-/* Las escenas en orden de scroll. `w` es cuánto scroll ocupa cada una. */
+/* Las escenas en orden de scroll, agrupadas en las siete secciones del sitio (`sec`). `w` = cuánto scroll ocupa. */
 export const SCENES = [
-  { id: 'inicio', space: 'calle', w: 1.3, slug: 'EXT. CALLE DE LIMA – NOCHE', nav: 'Inicio' },
-  { id: 'historia', space: 'cafeteria', w: 1.7, slug: 'INT. CAFETERÍA – DÍA', nav: 'La historia' },
-  { id: 'personajes', space: 'restaurante', w: 1.6, slug: 'INT. RESTAURANTE – TARDE', nav: 'Personajes' },
-  { id: 'universo', space: 'cineclub', w: 1.7, slug: 'INT. CINECLUB – NOCHE', nav: 'Universo transmedia' },
-  { id: 'archivo', space: 'cuarto', w: 2.6, slug: 'INT. CUARTO DE EMILIA – NOCHE', nav: 'El archivo de Emilia' },
-  { id: 'mural', space: 'cuarto', w: 2.0, slug: 'INT. CUARTO DE EMILIA – EL MURAL', nav: 'El mural' },
-  { id: 'estreno', space: 'melon', w: 1.7, slug: 'INT. CASA MELÓN – SALA DEL JURADO', nav: 'El estreno' },
-  { id: 'equipo', space: 'calle', w: 1.4, slug: 'EXT. LIMA – AMANECER', nav: 'Equipo y contacto' }
+  { id: 'inicio', sec: 'inicio', space: 'calle', w: 2.2, slug: 'EXT. LIMA – ATARDECER', nav: 'Inicio' },
+  { id: 'historia', sec: 'historia', space: 'cafeteria', w: 1.5, slug: 'INT. CAFETERÍA – DÍA', nav: 'La historia' },
+  { id: 'corto', sec: 'historia', space: 'cineclub', w: 1.5, slug: 'INT. CINECLUB – NOCHE', nav: 'La historia' },
+  { id: 'personajes', sec: 'personajes', space: 'restaurante', w: 1.8, slug: 'INT. RESTAURANTE – TARDE', nav: 'Personajes' },
+  { id: 'archivo', sec: 'archivo', space: 'cuarto', w: 2.8, slug: 'INT. CUARTO DE EMILIA – ATARDECER', nav: 'El archivo de Emilia' },
+  { id: 'mural', sec: 'archivo', space: 'cuarto', w: 1.9, slug: 'INT. CUARTO DE EMILIA – NOCHE', nav: 'El archivo de Emilia' },
+  { id: 'universo', sec: 'universo', space: 'calle', w: 2.8, slug: 'EXT. CALLE DE LIMA – NOCHE', nav: 'Universo transmedia' },
+  { id: 'estreno', sec: 'estreno', space: 'melon', w: 1.9, slug: 'INT. SALA DEL ESTRENO – NOCHE', nav: 'El estreno' },
+  { id: 'equipo', sec: 'equipo', space: 'calle', w: 1.5, slug: 'EXT. LIMA – AMANECER', nav: 'Equipo y contacto' }
 ];
 { let a = 0; const tot = SCENES.reduce((s, x) => s + x.w, 0); SCENES.forEach(s => { s.a = a / tot; a += s.w; s.b = a / tot; }); }
-/* ¿Hay corte (fundido a negro) entre dos escenas vecinas? Solo si cambia el espacio o la luz. */
+/* ¿Hay corte (fundido a negro) entre dos escenas vecinas? Solo si cambia el espacio. */
 export const cutBetween = (i, j) => { const A = SCENES[i], B = SCENES[j]; return !A || !B || A.space !== B.space || A.space === 'calle'; };
 
 const GradeShader = {
-  uniforms: { tDiffuse: { value: null }, temp: { value: 0 }, sat: { value: 1 }, vig: { value: 1 }, time: { value: 0 }, grain: { value: 0.05 }, fade: { value: 1 } },
+  uniforms: { tDiffuse: { value: null }, temp: { value: 0 }, sat: { value: 1 }, vig: { value: 1 }, time: { value: 0 }, grain: { value: 0.06 }, fade: { value: 1 }, ca: { value: 0.012 } },
   vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
-  fragmentShader: `uniform sampler2D tDiffuse; uniform float temp, sat, vig, time, grain, fade; varying vec2 vUv;
+  fragmentShader: `uniform sampler2D tDiffuse; uniform float temp, sat, vig, time, grain, fade, ca; varying vec2 vUv;
     void main(){
-      vec4 c = texture2D(tDiffuse, vUv);
-      c.rgb *= vec3(1.0 + temp, 1.0 + temp * 0.15, 1.0 - temp);
-      float l = dot(c.rgb, vec3(0.2126, 0.7152, 0.0722));
-      c.rgb = mix(vec3(l), c.rgb, sat);
-      float d = length((vUv - 0.5) * vec2(1.0, 0.82)) * vig;
-      c.rgb *= mix(0.22, 1.0, smoothstep(0.92, 0.28, d));
+      vec2 q = vUv - 0.5; float r2 = dot(q, q);
+      vec3 c = vec3(texture2D(tDiffuse, vUv + q * r2 * ca).r, texture2D(tDiffuse, vUv).g, texture2D(tDiffuse, vUv - q * r2 * ca).b);
+      c *= vec3(1.0 + temp, 1.0 + temp * 0.15, 1.0 - temp);
+      float l = dot(c, vec3(0.2126, 0.7152, 0.0722));
+      /* teñido de cine: sombras hacia el verde azulado, luces hacia el ámbar */
+      c *= mix(vec3(0.86, 1.0, 1.1), vec3(1.1, 1.0, 0.86), smoothstep(0.02, 0.75, l));
+      c = mix(vec3(l), c, sat);
+      c = pow(max(c, 0.0), vec3(1.14)) * 1.12;
+      float d = length(q * vec2(1.0, 0.82)) * vig;
+      c *= mix(0.16, 1.0, smoothstep(0.95, 0.25, d));
       float n = fract(sin(dot(vUv * vec2(1920.0, 1080.0) + mod(time, 10.0) * 61.0, vec2(12.9898, 78.233))) * 43758.5453);
-      c.rgb += (n - 0.5) * grain * (0.25 + l);
-      gl_FragColor = vec4(max(c.rgb, 0.0) * fade, 1.0);
+      c += (n - 0.5) * grain * (0.25 + l);
+      gl_FragColor = vec4(max(c, 0.0) * fade, 1.0);
     }`
 };
 
@@ -53,7 +59,6 @@ export function createStage(canvas, { width, height, dpr = 1, shadows = 2048, vi
   scene.background = new THREE.Color('#000'); scene.fog = new THREE.Fog('#000', 10, 60);
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture; pmrem.dispose();
-
   const camera = new THREE.PerspectiveCamera(55, width / height, 0.05, 400);
   scene.add(camera);
 
@@ -66,19 +71,17 @@ export function createStage(canvas, { width, height, dpr = 1, shadows = 2048, vi
   const lights = { hemi, key, pts };
 
   const spaces = { calle: calle(), cafeteria: cafeteria(), restaurante: restaurante(CAST), cineclub: cineclub(), cuarto: cuarto({ CHAPTERS, SEED_NOTES }), melon: melon() };
+  dress(spaces);
   for (const s of Object.values(spaces)) { s.group.visible = false; scene.add(s.group); }
 
-  /* Post */
   const composer = new EffectComposer(renderer);
   composer.setPixelRatio(dpr); composer.setSize(width, height);
   composer.addPass(new RenderPass(scene, camera));
-  let gtao = null;
-  if (ao) { gtao = new GTAOPass(scene, camera, width, height); gtao.updateGtaoMaterial({ radius: 0.32, thickness: 1, scale: 1.15, samples: 12 }); gtao.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 4, rings: 2, samples: 12 }); gtao.blendIntensity = 0.9; composer.addPass(gtao); }
-  const bloom = new UnrealBloomPass(new THREE.Vector2(width, height), 0.5, 0.7, 0.92); composer.addPass(bloom);
+  if (ao) { const g = new GTAOPass(scene, camera, width, height); g.updateGtaoMaterial({ radius: 0.32, thickness: 1, scale: 1.15, samples: 12 }); g.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 4, rings: 2, samples: 12 }); g.blendIntensity = 0.9; composer.addPass(g); }
+  const bloom = new UnrealBloomPass(new THREE.Vector2(width, height), 0.5, 0.85, 0.9); composer.addPass(bloom);
   const grade = new ShaderPass(GradeShader); composer.addPass(grade);
   composer.addPass(new OutputPass());
 
-  /* Rieles de cámara por escena */
   const rails = {};
   for (const sc of SCENES) {
     const K = spaces[sc.space].cams[sc.id];
@@ -89,27 +92,35 @@ export function createStage(canvas, { width, height, dpr = 1, shadows = 2048, vi
     };
   }
 
-  let cur = { id: null, scene: null, space: null, rig: null };
-  const col = new THREE.Color();
+  /* Aplica un juego de luces. Si trae `to`, mezcla hacia ese segundo estado según u (0..1): la luz cambia con el scroll. */
+  const c1 = new THREE.Color(), c2 = new THREE.Color();
+  const N = (a, b, u) => (b === undefined ? a : a + (b - a) * u);
+  const C = (target, a, b, u) => { c1.set(a); if (b !== undefined) c1.lerp(c2.set(b), u); target.copy(c1); };
+  function applyRig(r, u) {
+    const t = r.to || {}, k = r.key, kt = t.key || {}, g = r.grade, gt = t.grade || {};
+    C(scene.background, r.bg, t.bg, u); C(scene.fog.color, r.fog[0], t.fog && t.fog[0], u); scene.fog.near = N(r.fog[1], t.fog && t.fog[1], u); scene.fog.far = N(r.fog[2], t.fog && t.fog[2], u);
+    renderer.toneMappingExposure = N(r.exposure, t.exposure, u); scene.environmentIntensity = N(r.env, t.env, u);
+    C(hemi.color, r.hemi[0], t.hemi && t.hemi[0], u); C(hemi.groundColor, r.hemi[1], t.hemi && t.hemi[1], u); hemi.intensity = N(r.hemi[2], t.hemi && t.hemi[2], u);
+    for (let i = 0; i < 3; i++) { key.position.setComponent(i, N(k.p[i], kt.p && kt.p[i], u)); key.target.position.setComponent(i, N(k.t[i], kt.t && kt.t[i], u)); }
+    C(key.color, k.c, kt.c, u); key.intensity = N(k.i, kt.i, u); key.angle = N(k.angle, kt.angle, u); key.penumbra = k.pen;
+    pts.forEach((p, i) => { const d = r.pts[i], e = t.pts && t.pts[i]; if (!d) { p.intensity = 0; return; } p.position.set(d[0], d[1], d[2]); C(p.color, d[3], e && e[3], u); p.intensity = N(d[4], e && e[4], u); p.distance = d[5]; });
+    grade.uniforms.temp.value = N(g.temp, gt.temp, u); grade.uniforms.sat.value = N(g.sat, gt.sat, u); grade.uniforms.vig.value = N(g.vig, gt.vig, u); bloom.strength = N(r.bloom, t.bloom, u);
+  }
+
+  let cur = { id: null, scene: null, space: null, rig: null }, lastT = 0;
   function show(id) {
     if (cur.id === id) return;
     const sc = SCENES.find(s => s.id === id), sp = spaces[sc.space], r = sp.rigs[id] || Object.values(sp.rigs)[0];
     for (const s of Object.values(spaces)) s.group.visible = s === sp;
     sp.enter && sp.enter(id);
-    scene.background.set(r.bg); scene.fog.color.set(r.fog[0]); scene.fog.near = r.fog[1]; scene.fog.far = r.fog[2];
-    renderer.toneMappingExposure = r.exposure; scene.environmentIntensity = r.env;
-    hemi.color.set(r.hemi[0]); hemi.groundColor.set(r.hemi[1]); hemi.intensity = r.hemi[2];
-    key.position.set(...r.key.p); key.target.position.set(...r.key.t); key.color.set(r.key.c); key.intensity = r.key.i; key.angle = r.key.angle; key.penumbra = r.key.pen;
-    pts.forEach((p, i) => { const d = r.pts[i]; if (!d) { p.intensity = 0; return; } p.position.set(d[0], d[1], d[2]); p.color.set(d[3]); p.intensity = d[4]; p.distance = d[5]; });
-    grade.uniforms.temp.value = r.grade.temp; grade.uniforms.sat.value = r.grade.sat; grade.uniforms.vig.value = r.grade.vig; bloom.strength = r.bloom;
+    applyRig(r, 0);
     renderer.shadowMap.needsUpdate = true;
     cur = { id, scene: sc, space: sp, rig: r };
   }
 
   const P = new THREE.Vector3(), Q = new THREE.Vector3(), R = new THREE.Vector3(), U = new THREE.Vector3();
-  /* Coloca la cámara en el punto t (0..1) del riel de la escena. `look` añade un paralaje leve. */
   function view(id, t, look = { x: 0, y: 0 }) {
-    const rl = rails[id]; t = Math.min(1, Math.max(0, t));
+    const rl = rails[id]; t = Math.min(1, Math.max(0, t)); lastT = t;
     rl.pos.getPoint(t, P); rl.tgt.getPoint(t, Q);
     const f = t * (rl.fov.length - 1), i = Math.min(rl.fov.length - 2, Math.floor(f)), u = f - i, e = u * u * (3 - 2 * u);
     let fov = rl.fov[i] + (rl.fov[i + 1] - rl.fov[i]) * e;
@@ -122,8 +133,10 @@ export function createStage(canvas, { width, height, dpr = 1, shadows = 2048, vi
 
   function render(time, fade = 1) {
     if (!cur.space) return;
-    key.intensity = cur.rig.key.i;
-    cur.space.update(time, lights);
+    const r = cur.rig;
+    if (r.to) { const a = r.from ?? 0, b = r.until ?? 1, u = Math.min(1, Math.max(0, (lastT - a) / (b - a))); applyRig(r, u * u * (3 - 2 * u)); if (r.to.key) renderer.shadowMap.needsUpdate = true; }
+    else key.intensity = r.key.i;
+    cur.space.update(time, lights, lastT, cur.id);
     grade.uniforms.time.value = time; grade.uniforms.fade.value = fade;
     composer.render();
   }
@@ -131,7 +144,6 @@ export function createStage(canvas, { width, height, dpr = 1, shadows = 2048, vi
     renderer.setPixelRatio(d); renderer.setSize(w, h, !video); composer.setPixelRatio(d); composer.setSize(w, h);
     camera.aspect = w / h; camera.updateProjectionMatrix();
   }
-  /* Proyecta un punto del mundo a píxeles de pantalla; null si queda detrás de cámara */
   const V = new THREE.Vector3();
   function project(p, w, h) {
     V.set(p[0], p[1], p[2]).project(camera);
@@ -142,7 +154,6 @@ export function createStage(canvas, { width, height, dpr = 1, shadows = 2048, vi
     const t = new THREE.VideoTexture(el); t.colorSpace = THREE.SRGBColorSpace;
     spaces.cineclub.screenMat.map = t; spaces.cineclub.screenMat.needsUpdate = true;
   }
-  /* Compila materiales de todos los espacios antes de empezar (evita tirones al cambiar de escena) */
   function warmup() { const keep = cur.id; for (const sc of SCENES) { show(sc.id); view(sc.id, 0.5); composer.render(); } cur.id = null; if (keep) show(keep); }
 
   return { renderer, scene, camera, composer, spaces, lights, show, view, render, resize, project, setScreenVideo, warmup, get current() { return cur; }, shadowsDirty() { renderer.shadowMap.needsUpdate = true; }, reapply() { const id = cur.id; cur.id = null; show(id); } };

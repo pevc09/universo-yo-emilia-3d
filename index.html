@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600;700&family=Caveat:wght@500;700&family=Courier+Prime:wght@400;700&family=Permanent+Marker&display=swap">
 <link rel="stylesheet" href="css/panels.css">
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/cine.css">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"}}</script>
 </head>
 <body class="booting">
@@ -20,143 +21,166 @@
   <p class="loader-title">Yo, Emilia</p>
   <p class="loader-line" id="loaderLine">Preparando el set</p>
   <div class="loader-bar"><i id="loaderBar"></i></div>
+  <div class="loader-go" id="loaderGo" hidden>
+    <button class="act" type="button" data-enter="1">Entrar con sonido</button>
+    <button class="act ghost" type="button" data-enter="0">Entrar en silencio</button>
+  </div>
 </div>
 
 <canvas id="gl" aria-hidden="true"></canvas>
+<video id="teaser" src="videos/teaser.mp4" poster="img/teaser.jpg" muted loop playsinline preload="auto" aria-hidden="true"></video>
 <div id="shade" aria-hidden="true"></div>
+<div id="bars" aria-hidden="true"><i></i><i></i></div>
 
 <header id="hud">
   <a class="brand" href="#inicio" data-goto="inicio"><span>Universo</span> Yo, Emilia</a>
   <p class="slug" aria-live="polite"><span id="slugNum"></span><span id="slug"></span></p>
-  <button id="menuBtn" type="button" aria-expanded="false" aria-controls="menu">Escenas</button>
+  <div class="hud-btns">
+    <button id="soundBtn" type="button" aria-pressed="false">Sonido: no</button>
+    <button id="menuBtn" type="button" aria-expanded="false" aria-controls="menu">Escenas</button>
+  </div>
 </header>
+<div id="simbar"><span class="label">Demo: simula la semana</span><div class="seg weekseg" role="group" aria-label="Semana"></div></div>
 
-<nav id="escaleta" aria-label="Escenas del recorrido"></nav>
+<nav id="escaleta" aria-label="Secciones del recorrido"></nav>
 
 <main id="track">
 
-  <section class="scene" id="inicio" data-scene="inicio" aria-label="Inicio">
-    <div class="beat title" data-a="0" data-b="0.46">
+  <section class="scene" id="inicio" aria-label="Inicio">
+    <div class="beat title" data-a="0" data-b="0.3">
+      <p class="label">Teaser, en bucle y sin sonido</p>
       <h1>Yo, Emilia</h1>
       <p class="lema">El rechazo no es el final de la historia.</p>
-      <p class="meta">Un cortometraje y su universo. Lima, 2026.</p>
+      <a class="note n-y paste" href="#archivo" data-goto="archivo">¿Acabas de ver el corto?<br>Esto es lo que no te contamos.<br>Entra al cuarto de Emilia</a>
       <p class="scroll-cue"><span></span>Baja para entrar al universo</p>
     </div>
-    <div class="beat" data-a="0.52" data-b="1">
-      <h2>¿Acabas de ver el corto?</h2>
-      <p>Esto es lo que no te contamos. Recorre los espacios de Emilia: la cafetería, el cineclub, su cuarto y su mural.</p>
-      <div class="week-strip">
-        <p class="label" id="stripTitle"></p>
-        <ul id="strip"></ul>
-      </div>
-      <p class="acts"><a class="act" href="#archivo" data-goto="archivo">Ir al cuarto de Emilia</a><a class="act ghost" href="#mural" data-goto="mural">Pegar una nota en el mural</a></p>
+    <div class="beat onscene" data-a="0.36" data-b="0.64">
+      <p class="label">Desde el mural, en vivo</p>
+      <p class="big" id="liveQ"></p>
+      <div class="live-notes" id="liveNotes"></div>
+      <p class="acts"><button class="act" type="button" data-open="mural" data-go="mural">+ Pega tu nota en el mural</button></p>
+    </div>
+    <div class="beat wide onscene" data-a="0.69" data-b="1">
+      <p class="label" id="stripTitle"></p>
+      <div class="week-cards" id="strip"></div>
     </div>
   </section>
 
-  <section class="scene" id="historia" data-scene="historia" aria-label="La historia">
-    <div class="beat" data-a="0.05" data-b="0.34">
+  <section class="scene" id="historia" aria-label="La historia">
+    <div class="beat onscene" data-a="0.05" data-b="0.5">
+      <p class="label">02 · La historia</p>
       <h2>Una historia propia, a cualquier costo</h2>
-      <p>Emilia, una joven cineasta recién egresada, quiere hacer su primer largometraje con Ricardo, el productor con el que trabaja hace años. Lo llama <i>La ladrona de sueños</i>.</p>
+      <div class="chips"><span class="chip">Inspiracional</span><span class="chip">Drama</span><span class="chip">Comedia</span><span class="chip">Lima, 2026</span></div>
+      <p>Emilia, una joven cineasta recién egresada, quiere hacer su primer largometraje con Ricardo, el productor con el que trabaja hace años. Cuando un inversionista ofrece financiarlo si ella cambia el conflicto central de su historia, tiene que decidir qué está dispuesta a sacrificar.</p>
     </div>
-    <div class="beat" data-a="0.39" data-b="0.68">
-      <p class="big">Sus postulaciones a fondos y convocatorias vuelven rechazadas.</p>
-      <p>Ricardo cree que el problema está en la historia. Luego llega un inversionista: financia la película si Emilia cambia el conflicto central.</p>
-      <p class="quote">«Hay mucho dinero de por medio.» <span>Ricardo</span></p>
-      <p class="acts"><button class="act" type="button" data-panel="actos">Leer la historia en tres actos</button></p>
-    </div>
-    <div class="beat" data-a="0.73" data-b="1">
-      <h3>El tema</h3>
-      <p>Las dificultades y decisiones que enfrentan los realizadores audiovisuales para sacar adelante sus proyectos dentro de la industria.</p>
-      <ul class="facts"><li>Inspiracional, drama y comedia</li><li>Cortometraje de ficción, 20 minutos</li><li>Lima, julio y agosto de 2026</li></ul>
+    <div class="beat" data-a="0.56" data-b="1">
+      <p class="label">Tema</p>
+      <p class="tema">Las dificultades y decisiones que enfrentan los realizadores audiovisuales para sacar adelante sus proyectos dentro de la industria.</p>
     </div>
   </section>
 
-  <section class="scene" id="personajes" data-scene="personajes" aria-label="Personajes">
-    <div class="beat" data-a="0.05" data-b="0.4">
+  <section class="scene" id="corto" aria-label="El cortometraje">
+    <div class="beat onscene" data-a="0.08" data-b="0.95">
+      <p class="label" id="playerCap">Cortometraje completo</p>
+      <p class="acts"><button class="act" type="button" data-panel="trailer">Reproducir</button></p>
+      <p class="label">Marcadores de escena, abren el archivo</p>
+      <div class="markers" id="markers"></div>
+      <p class="meta">Tiempos de ejemplo: los define edición.</p>
+    </div>
+  </section>
+
+  <section class="scene" id="personajes" aria-label="Personajes">
+    <div class="beat" data-a="0.05" data-b="0.36">
+      <p class="label">03 · Personajes</p>
       <h2>Quién es quién</h2>
-      <p>Con Romina, su prima, Emilia piensa en voz alta. Aquí no hay fondos ni jurados: solo alguien que la conoce desde siempre.</p>
+      <p>Toca un retrato para abrir su ficha.</p>
     </div>
-    <div class="beat" data-a="0.5" data-b="1">
-      <h3>Cuatro retratos</h3>
-      <p>Toca un retrato de la pared para abrir su ficha.</p>
+    <div class="beat onscene" data-a="0.42" data-b="0.7">
       <ul class="cast-list" id="castList"></ul>
-      <p class="acts"><button class="act ghost" type="button" data-panel="crew">El equipo del piloto</button></p>
+    </div>
+    <div class="beat wide onscene" data-a="0.75" data-b="1">
+      <p class="label">El equipo del piloto · Modo Directora (TikTok)</p>
+      <div class="crew" id="crew"></div>
     </div>
   </section>
 
-  <section class="scene" id="universo" data-scene="universo" aria-label="Universo transmedia">
-    <div class="beat" data-a="0.05" data-b="0.3">
-      <h2>El recorrido completo</h2>
-      <p>Al salir del trabajo, Emilia entra a un cineclub. Cuando termina la función reparten un folleto: una convocatoria para pilotos de serie.</p>
+  <section class="scene" id="archivo" aria-label="El archivo de Emilia">
+    <div class="beat" data-a="0.03" data-b="0.24">
+      <p class="label">04 · El archivo de Emilia</p>
+      <h2>Lo que el corto no cuenta</h2>
+      <p>Este es el cuarto de Emilia. Toca los objetos para abrirlos. Cada semana aparece uno nuevo.</p>
     </div>
-    <div class="beat" data-a="0.35" data-b="0.62">
-      <h3>Siete experiencias, una sola historia</h3>
-      <p>El corto, la microserie <i>Modo Directora</i>, la miniserie <i>El otro lado de Ricardo</i>, el podcast <i>Miradas distintas</i> y este sitio. Estás en la cuarta parada.</p>
-      <p class="acts"><button class="act" type="button" data-panel="trailer">Ver el tráiler</button><button class="act ghost" type="button" data-panel="universo">Línea de tiempo y cruces</button></p>
-    </div>
-    <div class="beat" data-a="0.67" data-b="1">
-      <h3 id="weekTitle"></h3>
-      <ul class="releases" id="releases"></ul>
-      <p class="acts"><button class="act" type="button" data-panel="podcast">Enviar una pregunta al podcast</button><button class="act ghost" type="button" data-panel="semanas">Calendario de estrenos</button></p>
+    <div class="beat onscene" data-a="0.3" data-b="0.97">
+      <p class="label" id="objCount"></p>
+      <div class="objlist" id="objList"></div>
     </div>
   </section>
 
-  <section class="scene" id="archivo" data-scene="archivo" aria-label="El archivo de Emilia">
-    <div class="beat" data-a="0.03" data-b="0.2">
-      <h2>El archivo de Emilia</h2>
-      <p>Su cuarto, tal como quedó en el rodaje. Nueve objetos se abren al tocarlos; cada semana aparece uno nuevo.</p>
-      <p class="acts"><button class="act ghost" type="button" data-panel="objetos" id="objCount"></button></p>
-    </div>
-    <div class="beat" data-a="0.24" data-b="0.44">
-      <h3>Su lado personal</h3>
-      <p>Las películas que volvería a ver mil veces y el cuaderno donde apunta a la gente que observa. De ahí salen sus personajes.</p>
-    </div>
-    <div class="beat" data-a="0.48" data-b="0.7">
-      <h3>El escritorio</h3>
-      <p>Catorce noches para escribir un piloto. La carpeta de <i>Ladrona de sueños</i>, el chat que Ricardo dejó en visto y la primera página.</p>
-    </div>
-    <div class="beat" data-a="0.74" data-b="0.97">
-      <h3>Antes de dormir</h3>
-      <p>Lo que escucha para escribir, el podcast con el que se duerme y el calendario con la fecha de entrega encerrada en rojo.</p>
-    </div>
-  </section>
-
-  <section class="scene" id="mural" data-scene="mural" aria-label="El mural">
-    <div class="beat" data-a="0.05" data-b="0.3">
-      <h2>El mural</h2>
+  <section class="scene" id="mural" aria-label="El mural">
+    <div class="beat onscene" data-a="0.05" data-b="0.36">
+      <h3>El mural</h3>
       <p class="label" id="qLabel"></p>
       <p class="big" id="qText"></p>
       <p class="acts"><button class="act" type="button" data-open="mural">Pegar mi nota en el mural</button></p>
     </div>
-    <div class="beat" data-a="0.36" data-b="0.62">
-      <h3>Diez notas, diez capítulos</h3>
-      <p>Las notas del corcho son la escaleta de <i>Ladrona de sueños</i>: una por capítulo. Lucía escribe por encargo lo que otros firman, hasta que se atreve a firmar ella.</p>
-    </div>
-    <div class="beat" data-a="0.67" data-b="0.95">
-      <h3>La nota suelta</h3>
-      <p>«Potenciar evolución de Lucía». El cambio de su personaje necesitaba tiempo. Por eso dejó de ser película y se volvió serie.</p>
+    <div class="beat" data-a="0.42" data-b="0.95">
+      <p class="label">Las de Emilia · escaleta</p>
+      <p>Las diez notas del corcho son la escaleta de <i>Ladrona de sueños</i>, una por capítulo. Las del público se pegan a su lado.</p>
     </div>
   </section>
 
-  <section class="scene" id="estreno" data-scene="estreno" aria-label="El estreno">
-    <div class="beat" data-a="0.05" data-b="0.3">
-      <h2>La sala del jurado</h2>
-      <p>Una semana después, Emilia llega a dar su pitch en Casa Melón. Sin socio, con la carpeta sobre las piernas y Romina al teléfono.</p>
+  <section class="scene" id="universo" aria-label="Universo transmedia">
+    <div class="beat wide onscene" data-a="0.03" data-b="0.3">
+      <p class="label">05 · Universo transmedia</p>
+      <h2>El recorrido completo</h2>
+      <p>Siete experiencias en el orden del viaje. Estás en la cuarta.</p>
+      <div class="steps" id="steps"></div>
     </div>
-    <div class="beat" data-a="0.36" data-b="0.66">
-      <p class="label">13 de agosto de 2026</p>
-      <p class="big">Asunto: Fallo final del jurado</p>
-      <p class="acts"><button class="act" type="button" data-panel="fallo">Abrir el correo</button></p>
+    <div class="beat wide onscene" data-a="0.35" data-b="0.64">
+      <p class="label">Línea de tiempo</p>
+      <h3>Qué pasa antes, durante y después del corto</h3>
+      <div class="lanes-scroll"><div class="lanes" id="lanes"></div></div>
+      <div class="vtl" id="vtl"></div>
+      <div class="xinfo" id="xinfo"></div>
     </div>
-    <div class="beat" data-a="0.71" data-b="1">
-      <h3>Así fue la noche del estreno</h3>
-      <p>Proyección del corto, conversatorio y brindis. Las notas del mural físico ya están en el cuarto de Emilia.</p>
-      <p class="acts"><button class="act" type="button" data-panel="estreno">Ver la noche del estreno</button><button class="act ghost" type="button" data-panel="sello">Compartir mi foto con el sello</button></p>
+    <div class="beat wide onscene two-col" data-a="0.69" data-b="1">
+      <div class="stack">
+        <p class="label">Cinco semanas, una pregunta cada una</p>
+        <div class="weeks" id="weeks"></div>
+      </div>
+      <div class="stack">
+        <div class="card stack">
+          <p class="label">Adelanto del podcast · Miradas distintas</p>
+          <div class="pod-row"><button class="btn dark" id="podPlay" type="button" aria-label="Escuchar adelanto">▶</button><div class="wave"></div><span class="small" id="podTime">0:45</span></div>
+          <p class="small" id="podEp"></p>
+          <p class="acts"><button class="act" type="button" data-panel="podcast">Enviar mi pregunta</button><button class="act ghost" type="button" data-open="dias" data-go="archivo">Probar Modo Emilia</button></p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="scene" id="equipo" data-scene="equipo" aria-label="Equipo y contacto">
-    <div class="beat credits" data-a="0.08" data-b="0.52">
+  <section class="scene" id="estreno" aria-label="El estreno">
+    <div class="beat" data-a="0.05" data-b="0.4">
+      <p class="label">06 · El estreno</p>
+      <h2>Así fue la noche</h2>
+      <p>Evidencia del evento: proyección del corto, conversatorio y brindis.</p>
+    </div>
+    <div class="beat wide onscene two-col" data-a="0.46" data-b="1">
+      <div class="stack">
+        <p class="label">Testimonios</p>
+        <div class="card"><p class="quote">“Aquí va un testimonio breve de un asistente sobre el corto y el conversatorio.”</p><p class="small muted">Nombre · asistente</p></div>
+        <div class="card"><p class="quote">“Aquí va un testimonio breve de un invitado del conversatorio.”</p><p class="small muted">Nombre · invitado</p></div>
+      </div>
+      <div class="stack">
+        <a class="goto" href="#mural" data-goto="mural"><span>Las notas del mural físico ya están en el cuarto de Emilia</span><b>→</b></a>
+        <p class="acts"><button class="act" type="button" data-panel="sello">¿Estuviste? Comparte tu foto con el sello</button><button class="act ghost" type="button" data-panel="estreno">Ver las fotos de la noche</button></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="scene" id="equipo" aria-label="Equipo y contacto">
+    <div class="beat credits" data-a="0.06" data-b="0.5">
+      <p class="label">07 · Equipo y contacto</p>
       <h2>Quiénes hacemos esto</h2>
       <dl class="credit-roles">
         <div><dt>Dirección y guion</dt><dd>Luana Gómez Sánchez</dd></div>
@@ -168,14 +192,15 @@
         <div><dt>Edición</dt><dd>Pablo Vargas</dd></div>
       </dl>
     </div>
-    <div class="beat" data-a="0.58" data-b="1.01">
+    <div class="beat" data-a="0.56" data-b="1.01">
       <h3>Escríbenos</h3>
       <form class="contact" id="contactForm">
         <label for="cMail">Tu correo</label><input type="email" id="cMail" required autocomplete="email">
         <label for="cMsg">Mensaje</label><textarea id="cMsg" required rows="3"></textarea>
-        <button class="act" type="submit">Enviar mensaje</button>
+        <button class="act" type="submit">Enviar</button>
       </form>
-      <p class="meta">Redes oficiales: Instagram, TikTok, YouTube y Spotify.</p>
+      <p class="meta">Redes oficiales: Instagram · TikTok · YouTube · Spotify</p>
+      <p class="meta">Demo de la propuesta web del proyecto transmedia <i>Yo, Emilia</i> · 2026. Los textos marcados como ejemplo los define el equipo.</p>
       <p class="acts"><a class="act ghost" href="#inicio" data-goto="inicio">Volver al inicio</a></p>
     </div>
   </section>
@@ -189,8 +214,8 @@
     <div class="menu-top"><p class="label">Escenas del recorrido</p><button class="x" type="button" id="menuClose" aria-label="Cerrar">×</button></div>
     <ol id="sceneList"></ol>
     <div class="sim">
-      <p class="label">Simular la semana (demo)</p>
-      <div class="seg" id="weekSeg" role="group" aria-label="Semana"></div>
+      <p class="label">Demo: simula la semana</p>
+      <div class="seg weekseg" role="group" aria-label="Semana"></div>
       <p class="small">Cada semana aparece un objeto nuevo en el cuarto y cambia la pregunta del mural.</p>
     </div>
   </div>
