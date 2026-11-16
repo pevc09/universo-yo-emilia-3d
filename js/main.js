@@ -99,6 +99,7 @@ const panels = {
   sello() { shareImage({ kind: 'sello', title: 'Así fue la noche del estreno', body: 'Aquí va tu foto del evento, con el sello.', sub: 'El estreno · Yo, Emilia' }); }
 };
 
+panels.directora = () => panels.pieza(0); panels.ricardo = () => panels.pieza(1);
 document.addEventListener('click', e => {
   const a = e.target.closest('[data-goto], [data-go], [data-open], [data-panel], [data-cast], [data-w], [data-x], [data-wk]'); if (!a) return;
   const d = a.dataset;
@@ -233,7 +234,7 @@ if (!stage) {
     /* en el teléfono, la barra del navegador cambia el alto al hacer scroll: solo se reajusta si cambia el ancho o mucho el alto */
     if (innerWidth !== sw || Math.abs(viewH() - sh) > (touch ? 160 : 0)) { sw = innerWidth; sh = viewH(); if (sw > 0 && sh > 0) { stage.resize(sw, sh, dpr); ScrollTrigger.refresh(); } }
     if (sw < 2 || sh < 2) return;
-    const k = jump || reduce ? 1 : 1 - Math.exp(-dt / 1000 * 5.5); jump = false;
+    const k = jump || reduce ? 1 : 1 - Math.exp(-dt / 1000 * 3.6); jump = false;
     p += (target - p) * k; if (Math.abs(target - p) < 1e-5) p = target;
     look.x += (look.tx - look.x) * 0.06; look.y += (look.ty - look.y) * 0.06;
     let i = SCENES.findIndex(s => p < s.b); if (i < 0) i = SCENES.length - 1;
@@ -254,7 +255,7 @@ if (!stage) {
     const tv = i === 0 ? 1 - smooth((t - 0.2) / 0.16) : 0;
     teaser.style.opacity = (tv * intro.f).toFixed(3); teaser.style.transform = `scale(${(1 + (i === 0 ? t : 1) * 0.5).toFixed(4)})`; teaser.style.visibility = tv > 0.001 ? 'visible' : 'hidden';
     if (tv > 0.001 && teaser.paused && entered) teaser.play().catch(() => {}); else if (tv <= 0.001 && !teaser.paused) teaser.pause();
-    if (tv * intro.f < 0.999) { stage.view(sc.id, t, look, fx); stage.render(time, fade); }
+    if (tv * intro.f < 0.999) { stage.view(sc.id, t, look, fx, Math.min(0.1, dt / 1000)); stage.render(time, fade); }
     beats.forEach((list, j) => list.forEach(b => b.el.classList.toggle('on', entered && j === i && t >= b.a && t < b.b && fade > 0.55)));
     const busy = !$('#scrim').hidden || !$('#menu').hidden;
     for (const h of hots) {
