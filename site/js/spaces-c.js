@@ -96,9 +96,11 @@ function dressRoom(sp) {
     frase: { p: [1.35, 1.4, -1.0], t: [1.35, 1.28, -2.3], fov: 46 },
     laptop: { p: [0.2, 1.16, -1.22], t: [0.22, 0.93, -2.1], fov: 40 },
     fotos: { p: [-0.9, 1.6, 1.15], t: [-2.6, 1.68, 1.2], fov: 52 },
-    pared: { p: [0.75, 1.5, 1.0], t: [-2.6, 1.5, -0.6] },
+    pared: { p: [-1.05, 1.62, -0.55], t: [-2.6, 1.58, -0.88], fov: 52 },
+    estante: { p: [-1.45, 1.6, 0.85], t: [-2.42, 0.95, 0.85], fov: 46 },
+    calendario: { p: [1.45, 1.6, -1.15], t: [1.75, 1.55, -2.3], fov: 46 },
     mesa: { p: [0.4, 1.42, -0.1], t: [0.15, 0.95, -1.95] },
-    mesita: { p: [-0.2, 1.4, -0.55], t: [2.3, 0.6, -0.8] },
+    mesita: { p: [1.15, 1.25, -1.5], t: [2.3, 0.6, -0.95], fov: 48 },
     mural: { p: [0.2, 1.55, -0.15], t: [0.25, 1.62, -2.3] },
     notasCerca: { p: [-1.5, 1.86, -0.95], t: [-1.78, 1.84, -2.3], fov: 44 },
     corcho: { p: [-0.25, 1.82, -1.25], t: [-0.3, 1.82, -2.3], fov: 40 },
@@ -113,7 +115,7 @@ function dressRoom(sp) {
     /* de la laptop a las polaroids, y ahí se queda */
     personajes: [P(K.laptop, 0, 0), P({ p: [0.1, 1.45, -0.4], t: [-2.6, 1.4, -0.2] }, 0.12), P(K.fotos, 0.6, 0.8)],
     /* recorrido por los objetos: películas y cuaderno → escritorio → velador y calendario → mural */
-    archivo: [P(K.fotos, 0, 0), P(K.pared, 0.22, 0.14), P(K.mesa, 0.45, 0.14), P(K.mesita, 0.68, 0.14), P(K.mural, 0.95, 0.1)],
+    archivo: [P(K.fotos, 0, 0), P(K.pared, 0.14, 0.09), P(K.estante, 0.29, 0.08), P(K.mesa, 0.45, 0.09), P(K.calendario, 0.6, 0.08), P(K.mesita, 0.76, 0.09), P(K.mural, 0.96, 0.08)],
     /* las notas del público (la pregunta) → la escaleta en el corcho */
     mural: [P(K.mural, 0, 0.08), P(K.notasCerca, 0.21, 0.26), P(K.corcho, 0.5, 0.14), P(K.corchoDer, 0.74, 0.16), P(K.muralLejos, 1, 0.16)]
   };
@@ -122,15 +124,15 @@ function dressRoom(sp) {
   sp.hotspots.historia = [{ id: 'trailer', p: [0.22, 0.9, -2.02], label: 'Reproducir el corto', range: [0.7, 1] }];
   sp.hotspots.personajes.forEach(h => { h.range = [0.2, 1]; });
   sp.hotspots.archivo = [
-    { id: 'pared', p: [-W / 2 + 0.05, 1.6, -0.88], range: [0.12, 0.33] },
-    { id: 'cuaderno', p: [-W / 2 + 0.19, 1.0, 0.82], range: [0.12, 0.33] },
-    { id: 'carpeta', p: [-0.14, dy + 0.06, dz + 0.13], range: [0.36, 0.56] },
-    { id: 'chat', p: [0.56, dy + 0.05, dz + 0.17], range: [0.36, 0.56] },
-    { id: 'pagina', p: [0.52, dy + 0.05, dz - 0.2], range: [0.36, 0.56] },
-    { id: 'escucha', p: [2.26, 0.6, -0.9], range: [0.59, 0.8] },
-    { id: 'dias', p: [1.78, 1.72, BZ + 0.05], range: [0.59, 0.8] },
-    { id: 'casting', p: [MX + 0.74, MY + 0.16, BZ2], range: [0.86, 1] },
-    { id: 'mural', p: [MX - 0.2, MY + 0.02, BZ2], range: [0.86, 1] }
+    { id: 'pared', p: [-W / 2 + 0.05, 1.6, -0.88], range: [0.09, 0.19] },
+    { id: 'cuaderno', p: [-W / 2 + 0.19, 1.0, 0.82], range: [0.24, 0.34] },
+    { id: 'carpeta', p: [-0.14, dy + 0.06, dz + 0.13], range: [0.4, 0.5] },
+    { id: 'chat', p: [0.56, dy + 0.05, dz + 0.17], range: [0.4, 0.5] },
+    { id: 'pagina', p: [0.52, dy + 0.05, dz - 0.2], range: [0.4, 0.5] },
+    { id: 'escucha', p: [2.26, 0.6, -0.9], range: [0.71, 0.81] },
+    { id: 'dias', p: [1.78, 1.72, BZ + 0.05], range: [0.55, 0.65] },
+    { id: 'casting', p: [MX + 0.74, MY + 0.16, BZ2], range: [0.91, 1] },
+    { id: 'mural', p: [MX - 0.2, MY + 0.02, BZ2], range: [0.91, 1] }
   ];
   sp.hotspots.mural = [
     { id: 'mural', p: [-1.78, 1.52, BZ2], label: 'Pega tu nota en el mural', range: [0.08, 0.36] },

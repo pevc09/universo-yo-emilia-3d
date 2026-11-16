@@ -17,7 +17,7 @@ export const SCENES = [
   { id: 'inicio', sec: 'inicio', space: 'cuarto', w: 2.0, place: 'El cuarto de Emilia, al atardecer', nav: 'Inicio' },
   { id: 'historia', sec: 'historia', space: 'cuarto', w: 1.5, place: 'Su escritorio', nav: 'La historia' },
   { id: 'personajes', sec: 'personajes', space: 'cuarto', w: 1.3, place: 'Las fotos de su pared', nav: 'Personajes' },
-  { id: 'archivo', sec: 'archivo', space: 'cuarto', w: 2.3, place: 'Sus objetos, del atardecer a la noche', nav: 'El archivo de Emilia' },
+  { id: 'archivo', sec: 'archivo', space: 'cuarto', w: 3.0, place: 'Sus objetos, del atardecer a la noche', nav: 'El archivo de Emilia' },
   { id: 'mural', sec: 'archivo', space: 'cuarto', w: 1.5, place: 'El mural', nav: 'El mural' },
   { id: 'universo', sec: 'universo', space: 'calle', w: 2.2, place: 'Lima de noche', nav: 'Universo transmedia' },
   { id: 'estreno', sec: 'estreno', space: 'calle', w: 1.4, place: 'Función al aire libre', nav: 'El estreno' },

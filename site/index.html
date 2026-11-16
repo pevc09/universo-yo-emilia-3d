@@ -115,12 +115,43 @@
   </section>
 
   <section class="scene" id="archivo" aria-label="El archivo de Emilia">
-    <div class="beat" data-a="0.02" data-b="0.15">
+    <!-- un texto por objeto: aparece cuando la cámara se detiene frente a él -->
+    <div class="beat" data-a="0" data-b="0.085">
       <p class="label">04 · El archivo de Emilia</p>
       <h2>Lo que el corto no cuenta</h2>
-      <p>Este es el cuarto de Emilia. Toca los objetos para abrirlos. Cada semana aparece uno nuevo.</p>
+      <p>Su cuarto, objeto por objeto. Cada semana aparece uno nuevo.</p>
     </div>
-    <div class="beat onscene" data-a="0.18" data-b="0.97">
+    <div class="beat onscene" data-a="0.095" data-b="0.185">
+      <p class="label">Su lado personal</p>
+      <h3>Su pared de películas</h3>
+      <p>Las películas que volvería a ver mil veces, cada una con una nota suya.</p>
+      <p class="acts"><button class="act" type="button" data-open="pared">Abrir la pared</button></p>
+    </div>
+    <div class="beat onscene" data-a="0.25" data-b="0.33">
+      <p class="label">Su lado personal</p>
+      <h3>El cuaderno de mesas ajenas</h3>
+      <p>Apunta a la gente que observa en cafeterías y combis. De ahí salen sus personajes.</p>
+      <p class="acts"><button class="act" type="button" data-open="cuaderno">Leer el cuaderno</button></p>
+    </div>
+    <div class="beat onscene" data-a="0.405" data-b="0.495">
+      <p class="label">El escritorio</p>
+      <h3>Donde se escribe el piloto</h3>
+      <p>La carpeta de <i>Ladrona de sueños</i>, el chat que Ricardo dejó en visto y la primera página.</p>
+      <p class="acts"><button class="act" type="button" data-open="carpeta">La carpeta</button><button class="act ghost" type="button" data-open="chat">El chat en visto</button><button class="act ghost" type="button" data-open="pagina">La primera página</button></p>
+    </div>
+    <div class="beat onscene" data-a="0.56" data-b="0.64">
+      <p class="label">El calendario</p>
+      <h3>Los 14 días</h3>
+      <p>Catorce noches para escribir un piloto, con la entrega encerrada en rojo. Al final, prueba tu propia sesión Modo Emilia.</p>
+      <p class="acts"><button class="act" type="button" data-open="dias">Ver las 14 noches</button></p>
+    </div>
+    <div class="beat onscene" data-a="0.715" data-b="0.805">
+      <p class="label">El velador</p>
+      <h3>Lo que Emilia escucha</h3>
+      <p>Su playlist para escribir y el podcast con el que se duerme, en pausa en su celular.</p>
+      <p class="acts"><button class="act" type="button" data-open="escucha">Escuchar</button></p>
+    </div>
+    <div class="beat onscene" data-a="0.9" data-b="1">
       <p class="label" id="objCount"></p>
       <div class="objlist" id="objList"></div>
     </div>
