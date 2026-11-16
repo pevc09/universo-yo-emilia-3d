@@ -1,0 +1,974 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Demo de la propuesta web del proyecto transmedia Yo, Emilia.">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Universo Yo, Emilia</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600;700&family=Caveat:wght@500;700&family=JetBrains+Mono:wght@400;500&family=Permanent+Marker&display=swap">
+<style>
+/* Layout: one screen per section, like the real site; sticky header + week simulator on top, fixed tab bar on phones. */
+:root {
+  --paper: #eee7db; --surface: #fbf8f2; --ink: #221d19; --muted: #6f6558; --line: #d9cfbf;
+  --accent: #b3442a; --accent-soft: #f2d9cf; --dusk: #6d5b8c; --cross: #c96a2e; --cross-soft: #f5e1cf;
+  --wall: #dccfb9; --wall-2: #cfbfa5; --floor: #a68c6e; --wood: #6c5440; --sky-a: #f2c38f; --sky-b: #b89cc0; --city: #7d6b7f;
+  --bed: #efe6d8; --bed-2: #d5c7b3; --mon: #2a2622; --cork: #c59a6a;
+  --note-y: #f4d873; --note-p: #f1b4a3; --note-g: #bdd8b4; --note-b: #b8d0e8; --note-l: #d9c9ec; --note-ink: #2a241f;
+  --shadow: rgba(40, 28, 16, .14);
+  --f-display: "Newsreader", Georgia, "Times New Roman", serif;
+  --f-body: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+  --f-hand: "Caveat", "Segoe Print", "Comic Sans MS", cursive;
+  --f-mono: "JetBrains Mono", Consolas, monospace;
+  --f-brush: "Permanent Marker", "Caveat", cursive;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #16141b; --surface: #211e27; --ink: #ede6da; --muted: #a79d92; --line: #39343f;
+  --accent: #e57c57; --accent-soft: #46302a; --dusk: #a998c9; --cross: #e59358; --cross-soft: #3d2f25;
+  --wall: #2c2836; --wall-2: #252130; --floor: #3b3127; --wood: #4a3a2d; --sky-a: #2b2f5a; --sky-b: #181a33; --city: #0f1020;
+  --bed: #3a3542; --bed-2: #2f2b36; --mon: #0d0c10; --cork: #7c6247; --shadow: rgba(0,0,0,.4); color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --paper: #16141b; --surface: #211e27; --ink: #ede6da; --muted: #a79d92; --line: #39343f;
+  --accent: #e57c57; --accent-soft: #46302a; --dusk: #a998c9; --cross: #e59358; --cross-soft: #3d2f25;
+  --wall: #2c2836; --wall-2: #252130; --floor: #3b3127; --wood: #4a3a2d; --sky-a: #2b2f5a; --sky-b: #181a33; --city: #0f1020;
+  --bed: #3a3542; --bed-2: #2f2b36; --mon: #0d0c10; --cork: #7c6247; --shadow: rgba(0,0,0,.4); color-scheme: dark; }
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--surface); }
+a { color: var(--accent); }
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 600; line-height: 1.12; text-wrap: balance; margin: 0; }
+h2 { font-size: clamp(1.9rem, 4.6vw, 2.9rem); }
+h2 i, h3 i { color: var(--accent); font-weight: 400; }
+p { margin: 0; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.kicker { font-family: var(--f-mono); font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.lead { color: var(--muted); max-width: 62ch; }
+.chip { display: inline-flex; align-items: center; gap: .35em; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: .2em .75em; font-size: .82rem; white-space: nowrap; }
+.chip.accent { background: var(--accent-soft); border-color: transparent; color: var(--accent); font-weight: 600; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .4em; border: 0; border-radius: 999px; padding: .7em 1.25em; font-weight: 600; background: var(--accent); color: #fff; text-decoration: none; }
+.btn.dark { background: var(--ink); color: var(--paper); }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+.btn:disabled { opacity: .45; cursor: default; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+.note { font-family: var(--f-hand); font-size: 1.32rem; line-height: 1.15; color: var(--note-ink); padding: 14px 14px 12px; box-shadow: 2px 4px 10px var(--shadow); }
+.n-y { background: var(--note-y); } .n-p { background: var(--note-p); } .n-g { background: var(--note-g); } .n-b { background: var(--note-b); } .n-l { background: var(--note-l); }
+.small { font-size: .86rem; } .muted { color: var(--muted); }
+.stack { display: grid; gap: 14px; }
+
+/* header */
+header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--surface); border-bottom: 1px solid var(--line); }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 12px; }
+.brand { font-family: var(--f-display); font-size: 1.2rem; font-weight: 600; text-decoration: none; color: var(--ink); white-space: nowrap; }
+.brand i { font-weight: 400; }
+nav.desk { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+nav.desk a { text-decoration: none; color: var(--muted); font-size: .9rem; padding: .35em .6em; border-radius: 8px; }
+nav.desk a[aria-current="page"] { color: var(--ink); font-weight: 600; box-shadow: inset 0 -2px 0 var(--accent); border-radius: 0; }
+.menu-btn { display: none; border: 1px solid var(--line); background: transparent; border-radius: 10px; padding: .4em .7em; font-size: .85rem; }
+.sim { border-top: 1px dashed var(--line); }
+.sim .wrap { display: flex; align-items: center; gap: 10px; padding-block: 7px; overflow-x: auto; }
+.sim .label { font-family: var(--f-mono); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.seg { display: flex; gap: 4px; }
+.seg button { border: 1px solid var(--line); background: var(--paper); border-radius: 999px; padding: .15em .7em; font-size: .78rem; white-space: nowrap; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.drawer { display: none; }
+.drawer[data-open="true"] { display: grid; gap: 2px; padding-block: 8px 12px; }
+.drawer a { padding: .55em 0; text-decoration: none; color: var(--ink); border-bottom: 1px solid var(--line); }
+
+nav.tabs { display: none; }
+main { padding-block: 28px 64px; }
+section.view { display: grid; gap: 28px; }
+section.view[hidden] { display: none !important; }
+section.view > *, .stack > *, .hero > *, .two > *, .film > *, .wall > *, .week-strip > * { min-width: 0; }
+.head { display: grid; gap: 8px; }
+
+/* Inicio */
+.hero { position: relative; border-radius: 20px; overflow: hidden; min-height: 420px; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); background: var(--surface); border: 1px solid var(--line); }
+.teaser { position: relative; color: #f7efe2; padding: 28px; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; min-height: 360px; overflow: hidden; }
+.teaser canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.teaser > *:not(canvas) { position: relative; }
+.teaser .kicker { color: rgba(247,239,226,.75); }
+.title-brush { font-family: var(--f-brush); font-size: clamp(3rem, 8vw, 5.4rem); line-height: .95; letter-spacing: .02em; }
+.live { background: var(--wall); padding: 24px; display: grid; gap: 12px; align-content: start; }
+.live .q { font-family: var(--f-display); font-size: 1.25rem; line-height: 1.2; }
+.welcome { position: absolute; right: 22px; top: 22px; width: min(250px, 62%); transform: rotate(-2deg); text-decoration: none; font-size: 1.15rem; }
+.week-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) 1.2fr; gap: 12px; }
+.rel { display: grid; gap: 4px; align-content: start; }
+.rel b { font-size: 1rem; } .rel .small { color: var(--muted); }
+.newobj { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.newobj .chip { background: var(--accent); color: #fff; border: 0; }
+
+/* Historia */
+.film { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; align-items: start; }
+.player { position: relative; aspect-ratio: 16 / 9; max-width: 100%; border-radius: 16px; overflow: hidden; background: linear-gradient(160deg, #6b5a52, #2c2520 70%); color: #f4ece0; display: grid; place-items: center; border: 0; width: 100%; }
+.player .play { width: 72px; height: 72px; border-radius: 50%; background: rgba(255,255,255,.9); display: grid; place-items: center; }
+.player .play::after { content: ""; border-left: 20px solid #221d19; border-top: 13px solid transparent; border-bottom: 13px solid transparent; margin-left: 6px; }
+.player .cap { position: absolute; left: 16px; bottom: 12px; font-family: var(--f-mono); font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; }
+.player .msg { position: absolute; inset: auto 16px 40px; text-align: center; font-size: .9rem; }
+.markers { display: flex; flex-wrap: wrap; gap: 6px; }
+.markers button { border: 0; background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: .3em .8em; font-size: .82rem; font-weight: 600; }
+.markers button .t { font-family: var(--f-mono); font-weight: 500; margin-right: .3em; }
+.tema { border-left: 3px solid var(--accent); padding-left: 14px; font-family: var(--f-display); font-style: italic; font-size: 1.15rem; }
+
+/* Personajes */
+.cast { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.flip { perspective: 1000px; border: 0; background: none; padding: 0; text-align: left; height: 360px; }
+.flip .in { position: relative; width: 100%; height: 100%; transition: transform .6s; transform-style: preserve-3d; }
+.flip[aria-pressed="true"] .in { transform: rotateY(180deg); }
+.face { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 16px; padding: 18px; display: flex; flex-direction: column; overflow: hidden; }
+.front { color: #fbf4ea; justify-content: flex-end; gap: 4px; }
+.front .mono { position: absolute; top: 10px; right: 16px; font-family: var(--f-display); font-style: italic; font-size: 7rem; line-height: 1; opacity: .22; }
+.front .name { font-family: var(--f-display); font-size: 1.7rem; font-weight: 600; }
+.front .quote { font-family: var(--f-display); font-style: italic; font-size: 1rem; opacity: .9; }
+.front .hint { position: absolute; top: 14px; left: 14px; font-size: .72rem; background: rgba(255,255,255,.85); color: #221d19; padding: .15em .6em; border-radius: 999px; }
+.back { transform: rotateY(180deg); background: var(--surface); border: 1px solid var(--line); gap: 8px; font-size: .9rem; }
+.back .name { font-family: var(--f-display); font-size: 1.3rem; font-weight: 600; }
+.back .tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.crew { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.crew .card { padding: 14px; display: grid; gap: 4px; }
+
+/* Archivo */
+.room-scroll { overflow-x: auto; border-radius: 18px; border: 1px solid var(--line); -webkit-overflow-scrolling: touch; }
+.room { position: relative; min-width: 760px; aspect-ratio: 2 / 1; }
+.room svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hs { position: absolute; transform: translate(-50%, -50%); border: 0; background: none; padding: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.hs .dot { width: 22px; height: 22px; border-radius: 50%; background: #fff; border: 4px solid var(--accent); box-shadow: 0 0 0 0 rgba(179,68,42,.45); animation: pulse 2.2s infinite; }
+.hs .lab { font-size: .78rem; background: rgba(28,24,22,.86); color: #f6efe4; padding: .15em .65em; border-radius: 999px; white-space: nowrap; }
+.hs.new .lab { background: var(--accent); color: #fff; }
+.hs.locked .dot { border-color: #9c9184; background: #e9e2d6; animation: none; }
+.hs.locked .lab { background: rgba(120,110,100,.75); }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(179,68,42,.45); } 70% { box-shadow: 0 0 0 14px rgba(179,68,42,0); } 100% { box-shadow: 0 0 0 0 rgba(179,68,42,0); } }
+.objlist { display: flex; flex-wrap: wrap; gap: 6px; }
+.objlist button { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: .3em .85em; font-size: .85rem; }
+.objlist button.locked { opacity: .5; }
+.objlist button.new { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.swipe-hint { display: none; text-align: center; font-size: .82rem; color: var(--muted); }
+
+/* panel */
+.scrim { position: fixed; inset: 0; background: rgba(15,12,10,.45); z-index: 40; display: flex; justify-content: flex-end; }
+.scrim[hidden] { display: none !important; }
+.panel { width: min(560px, 100%); height: 100%; background: var(--surface); overflow-y: auto; padding: calc(20px + env(safe-area-inset-top, 0px)) max(22px, env(safe-area-inset-right, 0px)) calc(28px + env(safe-area-inset-bottom, 0px)) 22px; display: grid; gap: 16px; align-content: start; box-shadow: -10px 0 30px var(--shadow); }
+.panel-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.x { border: 1px solid var(--line); background: var(--paper); border-radius: 999px; width: 38px; height: 38px; font-size: 1.1rem; }
+.panel h3 { font-size: 1.8rem; }
+.goto { display: flex; justify-content: space-between; align-items: center; gap: 10px; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; text-decoration: none; color: var(--ink); }
+.goto b { color: var(--accent); }
+
+.wall { display: grid; grid-template-columns: 160px 1fr; gap: 16px; }
+.emi { background: var(--cork); border-radius: 10px; padding: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-content: start; }
+.emi button { border: 0; font-family: var(--f-hand); font-size: 1rem; line-height: 1.05; color: var(--note-ink); padding: 8px 6px; min-height: 58px; text-align: left; box-shadow: 1px 2px 4px var(--shadow); }
+.loose { margin-top: 10px; transform: rotate(-5deg); font-size: 1.05rem; transition: transform .3s; border: 0; width: 100%; text-align: left; }
+.loose:hover, .loose:focus-visible { transform: rotate(4deg) translate(4px, 3px); }
+.pub { display: grid; gap: 10px; }
+.pub .note { font-size: 1.2rem; }
+.meta { font-family: var(--f-body); font-size: .78rem; color: #5b5146; margin-top: 6px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.react { border: 1px solid rgba(0,0,0,.18); background: rgba(255,255,255,.5); border-radius: 999px; padding: .05em .6em; font-size: .78rem; color: var(--note-ink); }
+.react[aria-pressed="true"] { background: var(--note-ink); color: #fff; }
+.reply { background: var(--surface) !important; border: 2px dashed var(--accent); color: var(--ink); }
+.qbox { background: var(--ink); color: var(--paper); border-radius: 14px; padding: 16px; }
+.qbox .kicker { color: color-mix(in srgb, var(--paper) 70%, transparent); }
+.qbox p { font-family: var(--f-display); font-size: 1.3rem; line-height: 1.2; margin-top: 4px; }
+form.stack label { font-size: .85rem; font-weight: 600; }
+input[type="text"], input[type="email"], textarea { width: 100%; border: 1px solid var(--line); background: var(--paper); border-radius: 10px; padding: .65em .8em; }
+textarea { min-height: 92px; resize: vertical; }
+.count { font-family: var(--f-mono); font-size: .75rem; color: var(--muted); text-align: right; }
+
+.cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.cal button { aspect-ratio: 1; max-width: 100%; border: 1px solid var(--line); background: var(--paper); border-radius: 10px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.cal button.seen { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.cal button[aria-pressed="true"] { background: var(--accent); color: #fff; border-color: var(--accent); }
+.night { display: grid; gap: 10px; }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-variant-numeric: tabular-nums; }
+.bar-p { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin-top: 4px; }
+.bar-p i { display: block; height: 100%; background: var(--cross); }
+.timer { background: var(--ink); color: var(--paper); border-radius: 16px; padding: 18px; display: grid; gap: 10px; text-align: center; }
+.timer .clock { font-family: var(--f-mono); font-size: 3rem; font-weight: 500; letter-spacing: .06em; font-variant-numeric: tabular-nums; }
+.timer .row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.timer .alert { background: var(--accent); color: #fff; border-radius: 10px; padding: 8px 10px; font-size: .9rem; }
+.toggle { display: inline-flex; border: 1px solid var(--ink); border-radius: 999px; overflow: hidden; }
+.toggle button { border: 0; background: transparent; padding: .45em 1em; font-size: .88rem; }
+.toggle button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.page { background: #fffdf9; color: #221d19; border-radius: 6px; padding: 22px; box-shadow: 0 6px 18px var(--shadow); display: grid; gap: 10px; min-height: 300px; }
+.page s { color: #9a8f82; }
+.page .add { color: #b3442a; font-family: var(--f-hand); font-size: 1.2rem; }
+.pager { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.script { font-family: "Courier Prime", "Courier New", monospace; font-size: .92rem; line-height: 1.45; }
+.script .sl { text-transform: uppercase; font-weight: 700; }
+.script .ch { text-transform: uppercase; margin-left: 34%; margin-top: 8px; }
+.script .dl { margin: 0 14% 0 18%; }
+.script .pa { margin-left: 26%; font-style: italic; }
+.margin { color: #b3442a; font-family: var(--f-hand); font-size: 1.15rem; }
+.posters { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.poster { border: 0; border-radius: 6px; aspect-ratio: 2 / 3; max-width: 100%; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; text-align: left; color: #fbf3e6; box-shadow: 0 6px 14px var(--shadow); }
+.poster b { font-family: var(--f-display); font-size: 1.35rem; line-height: 1.05; }
+.poster span { font-family: var(--f-mono); font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; opacity: .85; }
+.chat { background: var(--paper); border-radius: 16px; padding: 14px; display: grid; gap: 8px; }
+.bubble { justify-self: end; max-width: 82%; background: var(--note-g); color: var(--note-ink); border-radius: 14px 14px 4px 14px; padding: 8px 10px; font-size: .92rem; }
+.bubble small { display: block; text-align: right; font-size: .72rem; color: #4b6b49; }
+.flyer { background: #1f1c2b; color: #f3e9da; border-radius: 10px; padding: 12px; font-size: .78rem; display: grid; gap: 4px; }
+.flyer b { font-family: var(--f-display); font-size: 1.05rem; }
+.casting { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.cand { display: grid; gap: 6px; }
+.cand .ph { aspect-ratio: 3 / 4; max-width: 100%; border-radius: 6px; background: linear-gradient(160deg, var(--wall-2), var(--floor)); display: grid; place-items: center; font-family: var(--f-mono); font-size: .72rem; color: var(--surface); }
+.cand .margin { font-size: 1.05rem; line-height: 1.1; }
+.tracks { display: grid; gap: 0; }
+.tracks div { display: grid; grid-template-columns: 28px 1fr auto; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: .92rem; align-items: center; }
+.tracks .i { font-family: var(--f-mono); color: var(--muted); font-size: .8rem; }
+.notebook { background: #fbf8ee; color: #2a241f; border-radius: 6px; padding: 18px 18px 18px 46px; background-image: linear-gradient(90deg, transparent 32px, #e3a597 32px, #e3a597 33px, transparent 33px), repeating-linear-gradient(#fbf8ee 0 31px, #cdd9e4 31px 32px); font-family: var(--f-hand); font-size: 1.3rem; line-height: 32px; box-shadow: 0 6px 18px var(--shadow); }
+.notebook p + p { margin-top: 32px; }
+
+/* Universo */
+.steps { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
+.step { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: grid; gap: 4px; align-content: start; min-width: 0; }
+.step .num { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--muted); display: grid; place-items: center; font-weight: 700; font-size: .85rem; }
+.step.here { background: var(--accent-soft); border-color: var(--accent); }
+.step.here .num { background: var(--accent); border-color: var(--accent); color: #fff; }
+.step b { font-size: .92rem; line-height: 1.2; }
+.step .small { font-size: .78rem; color: var(--muted); }
+.lanes-scroll { overflow-x: auto; }
+.lanes { min-width: 820px; display: grid; grid-template-columns: 190px repeat(3, 1fr); position: relative; border-top: 1px solid var(--line); }
+.lanes .ph { font-family: var(--f-mono); font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); padding: 10px 10px 8px; border-left: 1px dashed var(--line); }
+.lane-name { padding: 16px 10px 16px 0; border-top: 1px solid var(--line); }
+.lane-name b { display: block; } .lane-name span { font-size: .8rem; color: var(--muted); }
+.lane-cell { border-top: 1px solid var(--line); border-left: 1px dashed var(--line); padding: 14px 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.seg-b { border-radius: 999px; padding: .4em .9em; font-size: .85rem; background: var(--line); color: var(--ink); border: 0; }
+.seg-b.main { background: var(--ink); color: var(--paper); }
+.seg-b.green { background: var(--note-g); color: var(--note-ink); }
+.seg-b.out { background: transparent; border: 1.5px dashed var(--muted); }
+.xbtn { border: 0; background: var(--cross-soft); color: var(--ink); border-radius: 10px; padding: .45em .8em; font-size: .85rem; display: inline-flex; align-items: center; gap: .5em; text-align: left; }
+.xbtn::before { content: ""; width: 12px; height: 12px; background: var(--cross); transform: rotate(45deg); flex: none; }
+.xbtn[aria-pressed="true"] { outline: 2px solid var(--cross); }
+.xinfo { background: var(--cross-soft); border-radius: 14px; padding: 16px; display: grid; gap: 6px; }
+.vtl { display: none; }
+.weeks { display: grid; gap: 8px; }
+.wk { border: 1px solid var(--line); background: var(--surface); border-radius: 12px; }
+.wk > button { width: 100%; display: flex; justify-content: space-between; gap: 10px; align-items: center; border: 0; background: none; padding: 12px 14px; text-align: left; }
+.wk.on { border-color: var(--accent); }
+.wk .body { padding: 0 14px 14px; display: grid; gap: 6px; }
+.wk .r { display: flex; justify-content: space-between; gap: 10px; border-top: 1px solid var(--line); padding-top: 6px; font-size: .9rem; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+.wave { height: 26px; flex: 1; background: repeating-linear-gradient(90deg, var(--muted) 0 2px, transparent 2px 5px); opacity: .5; border-radius: 3px; }
+
+/* Estreno / Equipo */
+.gallery { display: grid; grid-template-columns: 2fr 1fr 1fr; grid-auto-rows: 150px; gap: 10px; }
+.gallery div { border-radius: 12px; background: linear-gradient(140deg, var(--wall-2), var(--floor)); display: grid; place-items: center; color: var(--surface); font-family: var(--f-mono); font-size: .72rem; text-align: center; padding: 8px; }
+.gallery .big { grid-row: span 2; background: linear-gradient(160deg, #6b5a52, #2c2520 70%); color: #f4ece0; }
+.quote { font-family: var(--f-display); font-style: italic; font-size: 1.1rem; }
+.roles { display: grid; }
+.roles div { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.roles span:first-child { font-family: var(--f-mono); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: .7em 1.1em; border-radius: 12px; z-index: 60; font-size: .9rem; max-width: calc(100% - 32px); box-shadow: 0 8px 20px var(--shadow); }
+.toast[hidden] { display: none !important; }
+.share { display: grid; gap: 12px; justify-items: center; }
+.share canvas { width: 240px; max-width: 100%; height: auto; border-radius: 14px; box-shadow: 0 10px 24px var(--shadow); }
+footer { border-top: 1px solid var(--line); padding-block: 20px; font-size: .85rem; color: var(--muted); }
+
+@media (max-width: 900px) {
+  nav.desk { display: none; }
+  .menu-btn { display: inline-block; }
+  nav.tabs { display: grid; grid-template-columns: repeat(5, 1fr); position: fixed; left: 0; right: 0; bottom: 0; z-index: 25; background: var(--surface); border-top: 1px solid var(--line); padding: 6px max(8px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px)); }
+  nav.tabs a { display: grid; justify-items: center; gap: 2px; font-size: .68rem; color: var(--muted); text-decoration: none; padding: 4px 0; }
+  nav.tabs a::before { content: ""; width: 18px; height: 18px; border: 1.5px solid currentColor; border-radius: 5px; }
+  nav.tabs a[aria-current="page"] { color: var(--ink); font-weight: 700; }
+  nav.tabs a[aria-current="page"]::before { background: var(--ink); }
+  main { padding-bottom: 110px; }
+  .toast { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
+  .hero { grid-template-columns: 1fr; }
+  .week-strip { grid-template-columns: 1fr 1fr; }
+  .film, .two { grid-template-columns: 1fr; }
+  .cast { grid-template-columns: 1fr 1fr; }
+  .crew { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .steps { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .swipe-hint { display: block; }
+  .gallery { grid-template-columns: 1fr 1fr; }
+  .gallery .big { grid-column: span 2; grid-row: span 1; }
+}
+@media (max-width: 560px) {
+  .cast { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .flip { height: 320px; }
+  .front .name { font-size: 1.35rem; }
+  .back { font-size: .8rem; padding: 12px; }
+  .crew { grid-template-columns: 1fr 1fr; }
+  .steps { grid-template-columns: 1fr 1fr; }
+  .wall { grid-template-columns: 1fr; }
+  .lanes-scroll { display: none; }
+  .vtl { display: grid; gap: 10px; }
+  .teaser { min-height: 330px; }
+}
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } html { scroll-behavior: auto; } }
+</style>
+
+</head>
+<body>
+<header class="top">
+  <div class="wrap bar">
+    <a class="brand" href="#inicio" data-go="inicio"><i>Universo</i> Yo, Emilia</a>
+    <nav class="desk" aria-label="Secciones">
+      <a href="#inicio" data-go="inicio">Inicio</a><a href="#historia" data-go="historia">La historia</a><a href="#personajes" data-go="personajes">Personajes</a><a href="#archivo" data-go="archivo">El archivo de Emilia</a><a href="#universo" data-go="universo">Universo transmedia</a><a href="#estreno" data-go="estreno">El estreno</a><a href="#equipo" data-go="equipo">Equipo y contacto</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="drawer">Menú</button>
+  </div>
+  <div class="wrap drawer" id="drawer" data-open="false">
+    <a href="#estreno" data-go="estreno">El estreno</a><a href="#equipo" data-go="equipo">Equipo y contacto</a><a href="#historia" data-go="historia">La historia</a><a href="#universo" data-go="universo">Universo transmedia</a>
+  </div>
+  <div class="sim"><div class="wrap">
+    <span class="label">Demo · simula la semana</span>
+    <div class="seg" id="weekSeg" role="group" aria-label="Semana del universo"></div>
+  </div></div>
+</header>
+
+<main class="wrap">
+
+<!-- 1 INICIO -->
+<section class="view" id="v-inicio" data-view="inicio">
+  <div class="hero">
+    <div class="teaser">
+      <canvas id="teaserCanvas" aria-hidden="true"></canvas>
+      <span class="kicker">Teaser · en bucle · sin sonido</span>
+      <div class="title-brush">Yo, Emilia</div>
+      <p>El rechazo no es el final de la historia.</p>
+      <a class="note n-y welcome" href="#archivo" data-go="archivo"><b>¿Acabas de ver el corto?</b><br>Esto es lo que no te contamos. Entra al cuarto de Emilia →</a>
+    </div>
+    <div class="live">
+      <span class="kicker">Desde el mural · en vivo</span>
+      <p class="q" id="liveQ"></p>
+      <div class="stack" id="liveNotes"></div>
+      <div><a class="btn" href="#archivo" data-go="archivo" data-open="mural">+ Pega tu nota en el mural</a></div>
+    </div>
+  </div>
+  <div class="stack">
+    <div class="kicker" id="stripTitle"></div>
+    <div class="week-strip" id="strip"></div>
+  </div>
+</section>
+
+<!-- 2 HISTORIA -->
+<section class="view" id="v-historia" data-view="historia" hidden>
+  <div class="head"><span class="kicker">02 · La historia</span><h2>Una historia <i>propia</i>, a cualquier costo</h2></div>
+  <div class="film">
+    <div class="stack">
+      <button class="player" id="player" aria-label="Reproducir el cortometraje (demo)">
+        <span class="play"></span><span class="cap" id="playerCap"></span><span class="msg" id="playerMsg" hidden></span>
+      </button>
+      <div class="stack" style="gap:8px">
+        <span class="kicker">Marcadores de escena · abren el archivo</span>
+        <div class="markers" id="markers"></div>
+        <span class="small muted">Tiempos de ejemplo: los define edición.</span>
+      </div>
+    </div>
+    <div class="stack">
+      <div style="display:flex;flex-wrap:wrap;gap:6px"><span class="chip">Inspiracional</span><span class="chip">Drama</span><span class="chip">Comedia</span><span class="chip">Lima, 2026</span></div>
+      <p>Emilia, una joven cineasta recién egresada, quiere hacer su primer largometraje con Ricardo, el productor con el que trabaja hace años. Cuando un inversionista ofrece financiarlo si ella cambia el conflicto central de su historia, tiene que decidir qué está dispuesta a sacrificar.</p>
+      <p class="tema"><span class="kicker" style="font-style:normal;display:block">Tema</span>Las dificultades y decisiones que enfrentan los realizadores audiovisuales para sacar adelante sus proyectos dentro de la industria.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3 PERSONAJES -->
+<section class="view" id="v-personajes" data-view="personajes" hidden>
+  <div class="head"><span class="kicker">03 · Personajes</span><h2>Quién es <i>quién</i></h2><p class="lead">Toca una ficha para voltearla.</p></div>
+  <div class="cast" id="cast"></div>
+  <div class="stack">
+    <span class="kicker">El equipo del piloto · Modo Directora (TikTok)</span>
+    <div class="crew" id="crew"></div>
+  </div>
+</section>
+
+<!-- 4 ARCHIVO -->
+<section class="view" id="v-archivo" data-view="archivo" hidden>
+  <div class="head"><span class="kicker">04 · El archivo de Emilia</span><h2>Lo que el corto <i>no</i> cuenta</h2><p class="lead">Este es el cuarto de Emilia. Toca los objetos para abrirlos. Cada semana aparece uno nuevo.</p></div>
+  <div class="stack" style="gap:8px">
+    <div class="room-scroll"><div class="room" id="room">
+      <svg viewBox="0 0 1200 600" aria-hidden="true">
+        <rect width="1200" height="420" fill="var(--wall)"/>
+        <rect y="410" width="1200" height="190" fill="var(--floor)"/>
+        <rect y="404" width="1200" height="10" fill="var(--wall-2)"/>
+        <!-- window -->
+        <rect x="900" y="50" width="230" height="270" rx="4" fill="var(--bed)"/>
+        <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--sky-b)"/><stop offset="1" stop-color="var(--sky-a)"/></linearGradient></defs>
+        <rect x="914" y="64" width="202" height="242" fill="url(#sky)"/>
+        <path d="M914 306 V250 h18 v-22 h14 v30 h20 v-40 h16 v26 h22 v-14 h18 v34 h14 v-50 h20 v40 h18 v-18 h16 v28 h22 V306 Z" fill="var(--city)"/>
+        <rect x="1012" y="64" width="6" height="242" fill="var(--bed)"/>
+        <!-- posters -->
+        <rect x="46" y="70" width="86" height="124" rx="3" fill="#5b6f8a"/><rect x="146" y="88" width="80" height="112" rx="3" fill="#a7553d"/>
+        <rect x="60" y="214" width="92" height="120" rx="3" fill="#3e3a36"/><rect x="168" y="222" width="76" height="104" rx="3" fill="#7c8a6a"/>
+        <text x="89" y="182" font-family="Newsreader, Georgia, serif" font-size="13" fill="#f3ead9" text-anchor="middle">La La Land</text>
+        <text x="186" y="188" font-family="Newsreader, Georgia, serif" font-size="12" fill="#f3ead9" text-anchor="middle">Fabelman</text>
+        <text x="106" y="322" font-family="Newsreader, Georgia, serif" font-size="12" fill="#f3ead9" text-anchor="middle">Mr. Banks</text>
+        <text x="206" y="314" font-family="Newsreader, Georgia, serif" font-size="11" fill="#f3ead9" text-anchor="middle">Como en el cine</text>
+        <!-- shelf + trophies -->
+        <rect x="270" y="122" width="70" height="6" fill="var(--wood)"/>
+        <path d="M282 122 v-20 h10 v20 z M302 122 v-28 h12 v28 z M324 122 v-16 h8 v16 z" fill="#c7a24a"/>
+        <!-- corkboard -->
+        <rect x="372" y="66" width="320" height="214" rx="6" fill="var(--cork)"/>
+        <g id="corkNotes"></g>
+        <!-- casting sheet (week 1) -->
+        <g id="castingSheet" opacity="0"><rect x="708" y="80" width="62" height="84" fill="#fbf8f0" transform="rotate(4 739 122)"/><rect x="716" y="92" width="20" height="24" fill="#b7a48c" transform="rotate(4 739 122)"/><rect x="742" y="92" width="20" height="24" fill="#9e8f7c" transform="rotate(4 739 122)"/><rect x="716" y="124" width="20" height="24" fill="#a99887" transform="rotate(4 739 122)"/><circle cx="739" cy="82" r="4" fill="#b3442a"/></g>
+        <!-- calendar -->
+        <rect x="790" y="176" width="86" height="104" rx="3" fill="#fbf8f0"/><rect x="790" y="176" width="86" height="18" rx="3" fill="#b3442a"/>
+        <g fill="#2a241f" id="calDots"></g>
+        <!-- desk -->
+        <rect x="300" y="392" width="620" height="16" rx="3" fill="var(--wood)"/>
+        <rect x="330" y="408" width="14" height="150" fill="var(--wood)"/><rect x="876" y="408" width="14" height="150" fill="var(--wood)"/>
+        <rect x="500" y="288" width="190" height="104" rx="6" fill="var(--mon)"/><rect x="585" y="384" width="20" height="10" fill="var(--mon)"/>
+        <rect x="514" y="300" width="162" height="78" fill="#3b4a5c" opacity=".55"/>
+        <rect x="350" y="370" width="104" height="22" rx="2" fill="#c9583b"/><rect x="356" y="366" width="92" height="6" fill="#efe4d0"/>
+        <rect x="720" y="380" width="44" height="12" rx="3" fill="#1d1b18"/>
+        <g id="pageOnDesk" opacity="0"><rect x="790" y="358" width="70" height="34" fill="#fffdf9" transform="rotate(-6 825 375)"/><path d="M798 366 h46 M798 374 h38 M798 382 h44" stroke="#9a8f82" stroke-width="2" transform="rotate(-6 825 375)"/></g>
+        <!-- bed -->
+        <rect x="940" y="430" width="300" height="130" rx="18" fill="var(--bed)"/><rect x="940" y="430" width="300" height="26" rx="12" fill="var(--bed-2)"/>
+        <rect x="1110" y="404" width="90" height="40" rx="14" fill="#f8f2e8"/>
+        <path d="M1030 470 a26 26 0 0 1 52 0" stroke="#2a2622" stroke-width="7" fill="none"/><rect x="1022" y="466" width="14" height="22" rx="5" fill="#2a2622"/><rect x="1076" y="466" width="14" height="22" rx="5" fill="#2a2622"/>
+        <!-- bag -->
+        <path d="M176 486 q34 -54 68 0" stroke="#5a4636" stroke-width="6" fill="none"/><rect x="160" y="482" width="100" height="80" rx="12" fill="#7a5c44"/>
+        <rect x="190" y="470" width="44" height="30" rx="3" fill="#e8dcc6" transform="rotate(-8 212 485)"/>
+      </svg>
+      <div id="hotspots"></div>
+    </div></div>
+    <p class="swipe-hint">← Desliza para recorrer el cuarto →</p>
+  </div>
+  <div class="stack" style="gap:8px">
+    <span class="kicker" id="objCount"></span>
+    <div class="objlist" id="objList"></div>
+  </div>
+</section>
+
+<!-- 5 UNIVERSO -->
+<section class="view" id="v-universo" data-view="universo" hidden>
+  <div class="head"><span class="kicker">05 · Universo transmedia</span><h2>El recorrido <i>completo</i></h2><p class="lead">Siete experiencias en el orden del viaje. Estás en la cuarta.</p></div>
+  <div class="steps" id="steps"></div>
+  <div class="stack">
+    <div class="head"><span class="kicker">Línea de tiempo</span><h3 style="font-size:1.7rem">Qué pasa <i>antes, durante y después</i> del corto</h3></div>
+    <div class="lanes-scroll"><div class="lanes" id="lanes"></div></div>
+    <div class="vtl" id="vtl"></div>
+    <div class="xinfo" id="xinfo"></div>
+  </div>
+  <div class="two">
+    <div class="stack">
+      <span class="kicker">Cinco semanas, una pregunta cada una</span>
+      <div class="weeks" id="weeks"></div>
+    </div>
+    <div class="stack">
+      <div class="card stack">
+        <span class="kicker">Adelanto del podcast · Miradas distintas</span>
+        <div style="display:flex;align-items:center;gap:10px"><button class="btn dark" id="podPlay" style="width:42px;height:42px;padding:0" aria-label="Escuchar adelanto">▶</button><div class="wave"></div><span class="small" style="font-family:var(--f-mono)" id="podTime">0:45</span></div>
+        <p class="small" id="podEp"></p>
+        <form class="stack" id="podForm">
+          <b id="podNext"></b>
+          <label for="podName">Nombre</label><input type="text" id="podName" required maxlength="40">
+          <label for="podQ">Tu pregunta</label><textarea id="podQ" required maxlength="240"></textarea>
+          <button class="btn dark" type="submit">Enviar pregunta</button>
+        </form>
+      </div>
+      <div class="card stack">
+        <span class="kicker">Producto innovador</span>
+        <p><b>El Pomodoro de Emilia.</b> Un temporizador físico: si lo retiras antes de tiempo, suena hasta que lo vuelves a colocar. En la web lo pruebas con la sesión <i>Modo Emilia</i>.</p>
+        <div><button class="btn ghost" data-open="dias">Probar Modo Emilia</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 ESTRENO -->
+<section class="view" id="v-estreno" data-view="estreno" hidden>
+  <div class="head"><span class="kicker">06 · El estreno</span><h2>Así fue la <i>noche</i></h2><p class="lead">Evidencia del evento: proyección del corto, conversatorio y brindis.</p></div>
+  <div class="gallery"><div class="big">Video resumen del evento</div><div>Foto · proyección</div><div>Foto · conversatorio</div><div>Foto · mural físico</div><div>Foto · brindis</div></div>
+  <div class="two">
+    <div class="stack">
+      <span class="kicker">Testimonios</span>
+      <div class="card"><p class="quote">“Aquí va un testimonio breve de un asistente sobre el corto y el conversatorio.”</p><p class="small muted">Nombre · asistente</p></div>
+      <div class="card"><p class="quote">“Aquí va un testimonio breve de un invitado del conversatorio.”</p><p class="small muted">Nombre · invitado</p></div>
+    </div>
+    <div class="stack">
+      <a class="goto" href="#archivo" data-go="archivo" data-open="mural"><span>Las notas del mural físico ya están en el cuarto de Emilia</span><b>→</b></a>
+      <button class="btn" id="stampBtn">¿Estuviste? Comparte tu foto con el sello</button>
+    </div>
+  </div>
+</section>
+
+<!-- 7 EQUIPO -->
+<section class="view" id="v-equipo" data-view="equipo" hidden>
+  <div class="head"><span class="kicker">07 · Equipo y contacto</span><h2>Quiénes <i>hacemos</i> esto</h2></div>
+  <div class="two">
+    <div class="roles">
+      <div><span>Dirección y guion</span><span>Luana Gómez Sánchez</span></div>
+      <div><span>Producción</span><span>Jeyday Olaya Morán</span></div>
+      <div><span>Dirección de fotografía</span><span>Marco Rosa Quispe</span></div>
+      <div><span>Dirección de arte</span><span>Jacob Domínguez Hurtado</span></div>
+      <div><span>Asistencia de arte</span><span>Karem Conislla Guerrero</span></div>
+      <div><span>Sonido</span><span>Oscar Peralta Jiménez</span></div>
+      <div><span>Edición</span><span>Pablo Vargas</span></div>
+    </div>
+    <form class="card stack" id="contactForm">
+      <span class="kicker">Escríbenos</span>
+      <label for="cMail">Tu correo</label><input type="email" id="cMail" required>
+      <label for="cMsg">Mensaje</label><textarea id="cMsg" required></textarea>
+      <button class="btn dark" type="submit">Enviar</button>
+      <p class="small muted">Redes oficiales: Instagram · TikTok · YouTube · Spotify</p>
+    </form>
+  </div>
+</section>
+
+</main>
+<footer><div class="wrap">Demo de la propuesta web del proyecto transmedia <i>Yo, Emilia</i> · 2026. Los textos marcados como ejemplo los define el equipo.</div></footer>
+
+<nav class="tabs" aria-label="Secciones principales">
+  <a href="#inicio" data-go="inicio">Inicio</a><a href="#historia" data-go="historia">Historia</a><a href="#personajes" data-go="personajes">Personajes</a><a href="#archivo" data-go="archivo">Archivo</a><a href="#universo" data-go="universo">Universo</a>
+</nav>
+
+<div class="scrim" id="scrim" hidden><div class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="panelTitle"></div></div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(() => {
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('ye_' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('ye_' + k, JSON.stringify(v)); } catch (e) {} }
+};
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+/* ---------------- data ---------------- */
+const WEEKS = [
+  { n: 0, eje: 'Estreno', q: '¿Cambiarías tu historia para que te la produzcan?', rel: [['Evento', 'Estreno del corto', 'Proyección, conversatorio y brindis'], ['Web', 'Se abre el universo', 'El cuarto de Emilia y el mural'], ['Mural físico', 'Notas del brindis', 'Digitalizadas con permiso']], obj: null },
+  { n: 1, eje: 'Empezar', q: '¿Cuándo fue la primera vez que alguien creyó en tu idea?', rel: [['TikTok', 'Modo Directora · cap. 1', '«Casting de Lucía»'], ['YouTube Shorts', 'El otro lado de Ricardo · cap. 1', '«Un sueño por cumplir»'], ['Spotify', 'Miradas distintas · ep. 1', 'Melina León: «De una idea a una película»']], obj: 'casting' },
+  { n: 2, eje: 'Ceder', q: '¿Hasta dónde cederías sin dejar de contar tu historia?', rel: [['TikTok', 'Modo Directora · cap. 2', '«El elenco y sus problemas»'], ['YouTube Shorts', 'El otro lado de Ricardo · cap. 2', '«El precio de avanzar»'], ['Spotify', 'Miradas distintas · ep. 2', 'Marco Moscoso: «Detrás de la producción»']], obj: 'pared' },
+  { n: 3, eje: 'Volver a intentarlo', q: '¿En quién confiaste para sacar adelante un proyecto?', rel: [['TikTok', 'Modo Directora · cap. 3', '«Detrás de cámara»'], ['YouTube Shorts', 'El otro lado de Ricardo · cap. 3', '«Una puerta entreabierta»'], ['Spotify', 'Miradas distintas · ep. 3', 'Omar Callegari: «La historia a través de la imagen»']], obj: 'chat' },
+  { n: 4, eje: 'Lo que cuesta', q: '¿Qué dejaste en el camino por un proyecto?', rel: [['TikTok', 'Modo Directora · cap. 4', '«Que se escuche»'], ['YouTube Shorts', 'El otro lado de Ricardo · cap. 4', '«Lo que cuesta»'], ['Spotify', 'Miradas distintas · ep. 4', 'Augusto Cabada: «Construir una historia y sus personajes»']], obj: 'cuaderno' },
+  { n: 5, eje: 'Lo que queda', q: '¿Cuál fue la oportunidad que cambió tu camino?', rel: [['TikTok', 'Modo Directora · cap. 5', '«Lo que no viste»'], ['YouTube Shorts', 'El otro lado de Ricardo · cap. 5', '«Lo que queda»'], ['Spotify', 'Miradas distintas · ep. 5', 'Susana Torres: «El mundo detrás de cada escena»']], obj: 'pagina' }
+];
+const EPISODES = [['Melina León', 'De una idea a una película'], ['Marco Moscoso', 'Detrás de la producción'], ['Omar Callegari', 'La historia a través de la imagen'], ['Augusto Cabada', 'Construir una historia y sus personajes'], ['Susana Torres', 'El mundo detrás de cada escena']];
+const OBJECTS = [
+  { id: 'mural', name: 'El mural', week: 0, x: 44, y: 24, type: 'Expansión y participación' },
+  { id: 'carpeta', name: 'La carpeta', week: 0, x: 33.5, y: 61, type: 'Expansión' },
+  { id: 'dias', name: 'Los 14 días', week: 0, x: 69.5, y: 38, type: 'Expansión' },
+  { id: 'escucha', name: 'Lo que Emilia escucha', week: 0, x: 88, y: 73, type: 'Persona y conexión' },
+  { id: 'casting', name: 'La lista del casting', week: 1, x: 61.6, y: 20, type: 'Conexión' },
+  { id: 'pared', name: 'Su pared de películas', week: 2, x: 12.5, y: 42, type: 'Persona' },
+  { id: 'chat', name: 'El chat en visto', week: 3, x: 61.5, y: 59, type: 'Conexión' },
+  { id: 'cuaderno', name: 'El cuaderno de mesas ajenas', week: 4, x: 17.6, y: 80, type: 'Persona' },
+  { id: 'pagina', name: 'La primera página del piloto', week: 5, x: 69, y: 58, type: 'Expansión' }
+];
+const CHAPTERS = ['El primer encargo', 'Firmas ajenas', 'La carta que no era mía', 'Clientes fijos', 'Lo que sabía la abuela', 'Plagio', 'Un sueño por encargo', 'Borrador', 'Mi nombre', 'Ladrona de sueños'];
+const NOTE_COLORS = ['n-y', 'n-p', 'n-g', 'n-b', 'n-y', 'n-l', 'n-p', 'n-g', 'n-b', 'n-y'];
+const NIGHTS = [
+  ['Decisión', 'Se registra en la convocatoria y decide que el piloto será el capítulo 1 de su escaleta, no su escena favorita.', 2, 9, 0, 'Registrada. Ya no hay vuelta atrás.'],
+  ['Dificultad', 'La primera escena de Lucía no funciona; la reescribe tres veces y se queda con la versión más corta.', 5, 8, 1, 'Lucía no quiere hablar todavía. La entiendo.'],
+  ['Avance', 'Divide el piloto en tres actos y pega la estructura junto al mural.', 9, 6, 3, 'Tres actos en la pared. Parecen pocos.'],
+  ['Dificultad', 'Turno largo en su trabajo; llega tarde y solo escribe una página.', 10, 7, 2, 'Una página también es una página.'],
+  ['Avance', 'Termina el primer acto; usa por primera vez el temporizador para no mirar el celular.', 14, 4, 6, 'El celular boca abajo funciona.'],
+  ['Decisión', 'Llega un episodio nuevo de Miradas distintas y, por primera vez, no lo pone: lo guarda para después de escribir.', 17, 2, 9, 'El episodio puede esperar. Lucía no.'],
+  ['Dificultad', 'Se traba a mitad del segundo acto; Romina le manda un audio y ella solo responde con un emoji.', 18, 3, 8, 'Le debo una llamada a Romina.'],
+  ['Avance', 'Sale a una cafetería a observar mesas ajenas y resuelve el diálogo que la tenía trabada.', 22, 1, 11, 'La señora de la mesa 3 me resolvió el diálogo sin saberlo.'],
+  ['Decisión', 'Decide que Lucía diga que no al final del piloto, aunque eso complique el capítulo 2.', 25, 1, 12, 'Hoy Lucía por fin dijo que no. Yo también.'],
+  ['Avance', 'Termina el primer borrador completo.', 31, 0, 14, '31 páginas. Sobran algunas, pero existen.'],
+  ['Dificultad', 'Lo lee en voz alta frente al espejo, como ensaya sus discursos, y corta los diálogos que suenan falsos.', 27, 0, 13, 'En voz alta se nota lo que es mentira.'],
+  ['Decisión', 'En la ficha de equipo escribe «Dirección y producción: Emilia», sin socio.', 28, 0, 15, 'Se ve bien escrito así.'],
+  ['Avance', 'Arma la carpeta: logline, sinopsis, escaleta y propuesta visual.', 28, 0, 16, 'La carpeta pesa más de lo que parece.'],
+  ['Avance', 'Última revisión y envío antes del cierre.', 28, 0, 18, 'Enviado. Sin pedirle permiso a nadie.']
+];
+const SEED_NOTES = [
+  { id: 's1', t: 'Le dije que no a una marca. Perdí el auspicio, gané el corto.', a: 'Ana · Lima', c: 'n-y', r: [24, 6] },
+  { id: 's2', t: 'Postulé siete veces. La octava fue un sí.', a: 'Anónimo', c: 'n-b', r: [31, 12] },
+  { id: 'e1', t: 'Lo que no cedes es lo que después te sostiene. — E.', a: 'Emilia contesta', c: 'reply', r: [0, 0], reply: true },
+  { id: 's3', t: 'Cambié el final por un fondo. Nunca lo volví a sentir mío.', a: 'Diego', c: 'n-g', r: [17, 3] },
+  { id: 's4', t: 'Mi primer corto lo grabé con el celular de mi tía. Sigue siendo el que más quiero.', a: 'Mafe · Trujillo', c: 'n-p', r: [12, 9] }
+];
+
+/* ---------------- state ---------------- */
+let week = 2;
+try { const w = store.get('week', 2); if (w >= 0 && w <= 5) week = w; } catch (e) {}
+let userNotes = store.get('notes', []);
+let reacts = store.get('reacts', {});
+
+/* ---------------- toast ---------------- */
+let toastT;
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 3200); }
+
+/* ---------------- routing ---------------- */
+const VIEWS = ['inicio', 'historia', 'personajes', 'archivo', 'universo', 'estreno', 'equipo'];
+function go(v, push = true) {
+  if (!VIEWS.includes(v)) v = 'inicio';
+  $$('section.view').forEach(s => s.hidden = s.dataset.view !== v);
+  $$('nav [data-go]').forEach(a => { if (a.dataset.go === v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+  $('#drawer').dataset.open = 'false'; $('#menuBtn').setAttribute('aria-expanded', 'false');
+  if (push) { try { history.replaceState(null, '', '#' + v); } catch (e) {} }
+  window.scrollTo({ top: 0, behavior: 'auto' });
+}
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-go], [data-open]');
+  if (!a) return;
+  if (a.dataset.go) { e.preventDefault(); go(a.dataset.go); }
+  if (a.dataset.open) { e.preventDefault(); if (a.dataset.go) go(a.dataset.go); openObject(a.dataset.open); }
+});
+$('#menuBtn').addEventListener('click', () => { const d = $('#drawer'); const o = d.dataset.open !== 'true'; d.dataset.open = o; $('#menuBtn').setAttribute('aria-expanded', o); });
+
+/* ---------------- week simulator ---------------- */
+function renderWeekSeg() {
+  $('#weekSeg').innerHTML = WEEKS.map(w => `<button type="button" data-w="${w.n}" aria-pressed="${w.n === week}">${w.n === 0 ? 'Estreno' : 'Semana ' + w.n}</button>`).join('');
+}
+$('#weekSeg').addEventListener('click', e => { const b = e.target.closest('button[data-w]'); if (!b) return; week = +b.dataset.w; store.set('week', week); renderAll(); const o = WEEKS[week].obj; toast(o ? `Semana ${week}: apareció «${OBJECTS.find(x => x.id === o).name}» en el cuarto` : 'Noche del estreno: el universo se abre'); });
+
+/* ---------------- inicio ---------------- */
+function renderInicio() {
+  const w = WEEKS[week];
+  $('#liveQ').textContent = w.q;
+  const notes = [...userNotes.filter(n => n.week === week).slice(-1), ...SEED_NOTES].slice(0, 3);
+  $('#liveNotes').innerHTML = notes.map((n, i) => `<div class="note ${n.reply ? 'reply' : n.c}" style="transform:rotate(${[-1.5, 1.2, -.6][i]}deg);${i === 1 ? 'margin-left:10%' : ''}">${esc(n.t)}</div>`).join('');
+  $('#stripTitle').textContent = week === 0 ? 'Esta semana en el universo · noche del estreno' : `Esta semana en el universo · semana ${week} · ${w.eje}`;
+  const o = w.obj ? OBJECTS.find(x => x.id === w.obj) : null;
+  $('#strip').innerHTML = w.rel.map(r => `<div class="card rel"><span class="chip" style="justify-self:start">${r[0]}</span><b>${r[1]}</b><span class="small">${r[2]}</span></div>`).join('') +
+    `<a class="card rel newobj" href="#archivo" data-go="archivo" ${o ? `data-open="${o.id}"` : ''} style="text-decoration:none"><span class="chip" style="justify-self:start">${o ? 'Nuevo en el cuarto' : 'Empieza aquí'}</span><b style="font-family:var(--f-display);font-size:1.25rem">${o ? o.name : 'El cuarto de Emilia'}</b><span class="small" style="color:inherit;opacity:.8">${o ? 'Ábrelo en el archivo →' : 'Cuatro objetos te esperan →'}</span></a>`;
+}
+
+/* teaser: slow dusk over Lima, drawn on canvas */
+function teaser() {
+  const c = $('#teaserCanvas'), ctx = c.getContext('2d');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let t0 = performance.now();
+  function size() { const r = c.getBoundingClientRect(); c.width = Math.max(1, r.width * devicePixelRatio); c.height = Math.max(1, r.height * devicePixelRatio); }
+  size(); addEventListener('resize', size);
+  const blocks = Array.from({ length: 34 }, (_, i) => ({ x: i / 34, w: .02 + ((i * 37) % 7) / 220, h: .06 + ((i * 53) % 11) / 70 }));
+  function frame(now) {
+    const W = c.width, H = c.height, t = (now - t0) / 1000;
+    const k = (Math.sin(t / 6) + 1) / 2;
+    const g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, `hsl(${255 - k * 20}, 28%, ${22 + k * 8}%)`);
+    g.addColorStop(.55, `hsl(${18 + k * 10}, 62%, ${48 + k * 8}%)`);
+    g.addColorStop(1, `hsl(28, 70%, ${62 + k * 6}%)`);
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = `rgba(255,222,170,${.55 + k * .2})`; ctx.beginPath(); ctx.arc(W * .72, H * (.7 - k * .05), H * .09, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgba(60,45,60,.55)';
+    ctx.beginPath(); ctx.moveTo(0, H * .78); ctx.quadraticCurveTo(W * .3, H * .62, W * .55, H * .74); ctx.quadraticCurveTo(W * .8, H * .64, W, H * .72); ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.fill();
+    ctx.fillStyle = 'rgba(35,26,34,.85)';
+    blocks.forEach(b => { const bw = b.w * W, bh = b.h * H; ctx.fillRect(b.x * W, H - bh - H * .02, bw, bh + H * .02); });
+    ctx.fillStyle = 'rgba(20,14,18,.5)'; ctx.fillRect(0, 0, W, H);
+    const v = ctx.createLinearGradient(0, H * .35, 0, H); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,.55)'); ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
+    if (!reduce) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+/* ---------------- historia ---------------- */
+const MARKERS = [['02:10', 'El mural', 'mural'], ['06:05', 'El chat en visto', 'chat'], ['09:20', 'Los 14 días', 'dias'], ['11:40', 'La carpeta', 'carpeta']];
+function renderHistoria() {
+  $('#playerCap').textContent = week === 0 ? 'Tráiler · el corto completo se publica tras el estreno' : 'Cortometraje completo';
+  $('#markers').innerHTML = MARKERS.map(m => `<button type="button" data-obj="${m[2]}"><span class="t">${m[0]}</span>${m[1]}</button>`).join('');
+}
+$('#markers').addEventListener('click', e => { const b = e.target.closest('button[data-obj]'); if (!b) return; go('archivo'); openObject(b.dataset.obj); });
+$('#player').addEventListener('click', () => { const m = $('#playerMsg'); m.hidden = false; m.textContent = 'En la web real aquí se reproduce el video sin salir de la página.'; });
+
+/* ---------------- personajes ---------------- */
+const CAST = [
+  { n: 'Emilia', age: 25, sub: 'cineasta', q: '«Quiero contar la historia de Lucía.»', bg: 'linear-gradient(170deg,#b79a7f,#5f4a3b)', who: 'Cineasta recién egresada, guionista y directora. Creativa, observadora y perseverante.', rel: 'Protagonista del universo.', tags: ['Corto', 'Modo Directora', 'Archivo'], ep: 'Ep. 1 · Melina León' },
+  { n: 'Ricardo Valdés', age: 35, sub: 'productor', q: '«Hay mucho dinero de por medio.»', bg: 'linear-gradient(170deg,#8792a1,#3c4350)', who: 'Productor firme, directo y práctico. Prioriza que la historia sea comercial para conseguir financiamiento.', rel: 'Socio y productor de Emilia desde la universidad.', tags: ['Corto', 'El otro lado de Ricardo'], ep: 'Ep. 2 · Marco Moscoso' },
+  { n: 'Romina', age: 30, sub: 'prima', q: 'Su apoyo fuera de la industria.', bg: 'linear-gradient(170deg,#a9b8a2,#56644f)', who: 'Prima cercana de Emilia, cariñosa y centrada. Trabaja en una escuela para niños con necesidades especiales.', rel: 'Su confidente: con ella Emilia piensa en voz alta.', tags: ['Corto'], ep: null },
+  { n: 'Lucía', age: null, sub: 'personaje de Emilia', q: '«En su barrio le dicen la ladrona de sueños.»', bg: 'linear-gradient(170deg,#c99a8d,#7a4b45)', who: 'Protagonista de Ladrona de sueños, la serie que escribe Emilia.', rel: 'Su personaje: la razón por la que Emilia no cede.', tags: ['Archivo', 'Modo Directora'], ep: 'Ep. 4 · Augusto Cabada' }
+];
+function renderCast() {
+  $('#cast').innerHTML = CAST.map((c, i) => `<button type="button" class="flip" aria-pressed="false" aria-label="Ficha de ${c.n}"><div class="in">
+    <div class="face front" style="background:${c.bg}"><span class="hint">Toca ↻</span><span class="mono">${c.n[0]}</span><span class="name">${c.n}</span><span class="small">${c.age ? c.age + ' · ' : ''}${c.sub}</span><span class="quote">${c.q}</span></div>
+    <div class="face back"><span class="name">${c.n}${c.age ? ` <span class="muted" style="font-size:1rem">${c.age}</span>` : ''}</span><p>${c.who}</p><p class="muted">${c.rel}</p>
+      <span class="kicker">Aparece en</span><div class="tags">${c.tags.map(t => `<span class="chip">${t}</span>`).join('')}</div>
+      ${c.ep ? `<span class="kicker">Para entenderlo, escucha</span><div class="tags"><span class="chip accent">Miradas distintas · ${c.ep}</span></div>` : ''}
+      <span style="margin-top:auto;color:var(--accent);font-weight:600" data-share="${i}">Compartir ficha ↗</span></div></div></button>`).join('');
+  $('#crew').innerHTML = [['Actriz de Lucía', 'Cap. 1 · Casting de Lucía'], ['Elenco', 'Cap. 2 · El elenco y sus problemas'], ['Cámara e iluminación', 'Cap. 3 · Detrás de cámara'], ['Sonido', 'Cap. 4 · Que se escuche'], ['Edición', 'Cap. 5 · Lo que no viste']]
+    .map(r => `<div class="card"><b>${r[0]}</b><span class="small muted">${r[1]}</span></div>`).join('');
+}
+$('#cast').addEventListener('click', e => {
+  const s = e.target.closest('[data-share]');
+  if (s) { e.stopPropagation(); const c = CAST[+s.dataset.share]; shareImage({ kind: 'ficha', title: c.n, body: c.q, sub: c.age ? c.age + ' años · ' + c.sub : c.sub }); return; }
+  const f = e.target.closest('.flip'); if (f) f.setAttribute('aria-pressed', f.getAttribute('aria-pressed') !== 'true');
+});
+
+/* ---------------- archivo ---------------- */
+function renderRoom() {
+  const notes = Array.from({ length: 18 }, (_, i) => { const col = i % 6, row = Math.floor(i / 6); const cls = ['--note-y', '--note-p', '--note-g', '--note-b', '--note-y', '--note-l'][(i * 5) % 6]; return `<rect x="${388 + col * 50}" y="${82 + row * 64}" width="40" height="48" fill="var(${cls})" transform="rotate(${((i * 7) % 5) - 2} ${408 + col * 50} ${106 + row * 64})"/>`; }).join('');
+  $('#corkNotes').innerHTML = notes;
+  $('#calDots').innerHTML = Array.from({ length: 14 }, (_, i) => `<rect x="${798 + (i % 7) * 10.5}" y="${206 + Math.floor(i / 7) * 14}" width="8" height="9" rx="1" fill="${i < 8 ? '#2a241f' : i === 8 ? '#b3442a' : '#d7cdbd'}"/>`).join('');
+  $('#castingSheet').setAttribute('opacity', week >= 1 ? 1 : 0);
+  $('#pageOnDesk').setAttribute('opacity', week >= 5 ? 1 : 0);
+  $('#hotspots').innerHTML = OBJECTS.map(o => {
+    const locked = o.week > week, isNew = o.week === week && week > 0;
+    return `<button type="button" class="hs ${locked ? 'locked' : ''} ${isNew ? 'new' : ''}" style="left:${o.x}%;top:${o.y}%" data-obj="${o.id}" aria-label="${o.name}${locked ? ' (semana ' + o.week + ')' : ''}"><span class="dot"></span><span class="lab">${locked ? 'Semana ' + o.week : (isNew ? 'Nuevo · ' : '') + o.name}</span></button>`;
+  }).join('');
+  const open = OBJECTS.filter(o => o.week <= week).length;
+  $('#objCount').textContent = `En el cuarto · ${open} de 9 objetos`;
+  $('#objList').innerHTML = OBJECTS.map(o => `<button type="button" data-obj="${o.id}" class="${o.week > week ? 'locked' : ''} ${o.week === week && week > 0 ? 'new' : ''}">${o.week > week ? 'Semana ' + o.week + ' · ?' : o.name}</button>`).join('');
+}
+['#hotspots', '#objList'].forEach(s => $(s).addEventListener('click', e => { const b = e.target.closest('[data-obj]'); if (b) openObject(b.dataset.obj); }));
+
+/* ---------------- panel ---------------- */
+let lastFocus = null;
+function openPanel(html) {
+  lastFocus = document.activeElement;
+  $('#panel').innerHTML = html; $('#scrim').hidden = false; document.body.style.overflow = 'hidden';
+  setTimeout(() => { const x = $('#panel .x'); if (x) x.focus(); }, 30);
+}
+function closePanel() { stopTimer(false); $('#scrim').hidden = true; document.body.style.overflow = ''; if (lastFocus) lastFocus.focus(); }
+$('#scrim').addEventListener('click', e => { if (e.target.id === 'scrim' || e.target.closest('.x')) closePanel(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#scrim').hidden) closePanel(); });
+const ptop = (kicker, title) => `<div class="panel-top"><span class="kicker">${kicker}</span><button class="x" type="button" aria-label="Cerrar">×</button></div><h3 id="panelTitle">${title}</h3>`;
+
+function openObject(id) {
+  const o = OBJECTS.find(x => x.id === id); if (!o) return;
+  if (o.week > week) { toast(`«${o.name}» aparece en la semana ${o.week}. Cámbiala arriba para verlo.`); return; }
+  ({ mural: pMural, carpeta: pCarpeta, dias: pDias, escucha: pEscucha, casting: pCasting, pared: pPared, chat: pChat, cuaderno: pCuaderno, pagina: pPagina })[id](o);
+}
+
+/* mural */
+function noteHTML(n) {
+  const r = reacts[n.id] || {};
+  const base = n.r || [0, 0];
+  return `<div class="note ${n.reply ? 'reply' : n.c}">${esc(n.t)}<div class="meta"><span>${esc(n.a)}</span>${n.pending ? '<span class="chip" style="font-size:.7rem">En moderación · se publica en menos de 24 h</span>' : ''}
+    ${n.reply ? '<span class="chip accent" style="font-size:.7rem">Emilia contesta</span>' : `<button class="react" type="button" data-r="${n.id}:0" aria-pressed="${!!r[0]}">♥ Me pasó ${base[0] + (r[0] ? 1 : 0)}</button><button class="react" type="button" data-r="${n.id}:1" aria-pressed="${!!r[1]}">Sigue ${base[1] + (r[1] ? 1 : 0)}</button>`}</div></div>`;
+}
+function pMural(o) {
+  const w = WEEKS[week];
+  const mine = userNotes.filter(n => n.week === week).slice().reverse();
+  openPanel(ptop('Objeto · ' + o.type, 'El mural') + `
+    <div class="qbox"><span class="kicker">Pregunta ${week === 0 ? 'del estreno' : 'de la semana ' + week}</span><p>${w.q}</p></div>
+    <div class="wall">
+      <div><span class="kicker">Las de Emilia · escaleta</span>
+        <div class="emi" style="margin-top:6px">${CHAPTERS.map((c, i) => `<button type="button" class="${NOTE_COLORS[i]}" data-ch="${i}" aria-label="Capítulo ${i + 1}">Cap. ${i + 1}</button>`).join('')}</div>
+        <button type="button" class="note n-p loose" aria-label="Nota suelta">Potenciar evolución de Lucía</button>
+        <p class="small muted" style="margin-top:8px" id="chOut">Toca una nota para leer el título del capítulo.</p>
+      </div>
+      <div class="pub"><span class="kicker">Las del público</span><div class="pub" id="pubNotes">${[...mine, ...SEED_NOTES].map(noteHTML).join('')}</div></div>
+    </div>
+    <form class="card stack" id="noteForm">
+      <span class="kicker">Pega tu nota</span>
+      <label for="nText">Tu respuesta</label><textarea id="nText" maxlength="200" required placeholder="Escribe en menos de un minuto"></textarea><div class="count" id="nCount">0 / 200</div>
+      <label for="nAlias">Nombre o alias (opcional)</label><input type="text" id="nAlias" maxlength="30" placeholder="Anónimo">
+      <button class="btn" type="submit">Pegar nota</button>
+      <p class="small muted">Sin crear cuenta. Las notas pasan por moderación: sin ataques personales ni nombres de terceros.</p>
+    </form>`);
+  $('#panel').addEventListener('click', muralClicks);
+  $('#nText').addEventListener('input', e => $('#nCount').textContent = `${e.target.value.length} / 200`);
+  $('#noteForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const t = $('#nText').value.trim(); if (!t) return;
+    const n = { id: 'u' + Date.now(), t, a: $('#nAlias').value.trim() || 'Anónimo', c: ['n-y', 'n-p', 'n-g', 'n-b', 'n-l'][userNotes.length % 5], r: [0, 0], pending: true, week };
+    userNotes.push(n); store.set('notes', userNotes);
+    $('#pubNotes').insertAdjacentHTML('afterbegin', noteHTML(n)); $('#nText').value = ''; $('#nCount').textContent = '0 / 200';
+    renderInicio();
+    shareImage({ kind: 'nota', title: WEEKS[week].q, body: t, sub: n.a });
+  });
+}
+function muralClicks(e) {
+  const ch = e.target.closest('[data-ch]');
+  if (ch) { $('#chOut').innerHTML = `<b>Capítulo ${+ch.dataset.ch + 1}:</b> «${CHAPTERS[+ch.dataset.ch]}» <span class="muted">(título de ejemplo)</span>`; return; }
+  const r = e.target.closest('[data-r]');
+  if (r) { const [id, k] = r.dataset.r.split(':'); reacts[id] = reacts[id] || {}; reacts[id][k] = !reacts[id][k]; store.set('reacts', reacts);
+    const n = [...userNotes, ...SEED_NOTES].find(x => x.id === id); r.closest('.note').outerHTML = noteHTML(n); }
+}
+
+/* carpeta */
+function pCarpeta(o) {
+  let pg = 0, ver = 'emilia';
+  const pages = [
+    () => `<div class="page" style="text-align:center;align-content:center"><span class="kicker" style="color:#6f6558">Convocatoria Casa Melón y Entretenimiento · Piloto de serie</span><b style="font-family:var(--f-display);font-size:2.2rem;line-height:1">Ladrona de sueños</b><span>Piloto de serie · 10 capítulos</span><span class="add">Dirección y producción: Emilia</span></div>`,
+    () => `<div class="page"><span class="kicker" style="color:#6f6558">Logline y sinopsis</span>
+      <div class="toggle" role="group" aria-label="Versión"><button type="button" data-v="emilia" aria-pressed="${ver === 'emilia'}">Versión de Emilia</button><button type="button" data-v="inv" aria-pressed="${ver === 'inv'}">Versión del inversionista</button></div>
+      ${ver === 'emilia'
+        ? `<p>En su barrio le dicen <i>la ladrona de sueños</i>: Lucía escribe por encargo los discursos, cartas y promesas que otros firman.</p><p>Cuando un encargo le pide escribir el sueño que ella nunca se atrevió a perseguir, debe decidir si se lo entrega a otro o lo firma con su nombre.</p><p><b>Personajes:</b> Lucía, su abuela, que le enseñó a escribir, y su mejor amiga.</p>`
+        : `<p><s>Lucía escribe por encargo los discursos, cartas y promesas que otros firman.</s> <span class="add">Lucía es una carterista encantadora</span></p><p><s>Debe decidir si entrega su propio sueño o lo firma con su nombre.</s> <span class="add">Roba a un empresario y se enamora de él.</span></p><p><b>Personajes:</b> Lucía, <s>su abuela</s>, <s>su mejor amiga</s>, <span class="add">el empresario</span>.</p><p class="small" style="color:#6f6558">El conflicto deja de ser la autoría y pasa a ser el romance.</p>`}</div>`,
+    () => `<div class="page"><span class="kicker" style="color:#6f6558">Lucía</span><p>Vive de escribir lo que otros firman y cree que eso no le cuesta nada. En diez capítulos descubre que cada encargo le roba un poco de su propia voz, hasta que se atreve a firmar.</p><p class="add">Su cambio necesita tiempo: por eso es serie y no película.</p></div>`,
+    () => `<div class="page"><span class="kicker" style="color:#6f6558">Por qué es serie · escaleta</span><ol style="margin:0;padding-left:1.3em">${CHAPTERS.map(c => `<li>${c}</li>`).join('')}</ol><p class="small" style="color:#6f6558">Títulos de ejemplo. Son las diez notas del mural.</p></div>`,
+    () => `<div class="page"><span class="kicker" style="color:#6f6558">Ficha de equipo</span><p><b>Dirección:</b> Emilia</p><p><b>Producción:</b> Emilia</p><p><b>Guion:</b> Emilia</p><p class="add">Una sola persona al frente. Sin socio.</p></div>`
+  ];
+  const names = ['Portada', 'Logline y sinopsis', 'Lucía', 'Por qué es serie', 'Ficha de equipo'];
+  function draw() {
+    $('#cWrap').innerHTML = pages[pg]() + `<div class="pager"><button class="btn ghost" type="button" data-p="-1" ${pg === 0 ? 'disabled' : ''}>← ${pg ? names[pg - 1] : ''}</button><span class="small muted">${pg + 1} de 5</span><button class="btn dark" type="button" data-p="1" ${pg === 4 ? 'disabled' : ''}>${pg < 4 ? names[pg + 1] : ''} →</button></div>`;
+  }
+  openPanel(ptop('Objeto · ' + o.type, 'La carpeta de <i>Ladrona de sueños</i>') + `<p class="small muted">La carpeta que Emilia lleva sobre las piernas en la sala de espera del pitch. Contenido de ejemplo: lo define guion.</p><div class="stack" id="cWrap"></div>`);
+  draw();
+  $('#cWrap').addEventListener('click', e => {
+    const p = e.target.closest('[data-p]'); if (p && !p.disabled) { pg = Math.max(0, Math.min(4, pg + +p.dataset.p)); draw(); }
+    const v = e.target.closest('[data-v]'); if (v) { ver = v.dataset.v; draw(); }
+  });
+}
+
+/* 14 días + Modo Emilia */
+let timer = null, remaining = 0, total = 0, leftTab = false, audio = null;
+function beep() { try { audio = audio || new (window.AudioContext || window.webkitAudioContext)(); const o = audio.createOscillator(), g = audio.createGain(); o.frequency.value = 880; o.type = 'square'; g.gain.value = .05; o.connect(g); g.connect(audio.destination); o.start(); o.stop(audio.currentTime + .5); } catch (e) {} }
+function fmt(s) { return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; }
+function stopTimer(reset = true) { clearInterval(timer); timer = null; if (reset) { remaining = total; } }
+function pDias(o) {
+  let night = 8;
+  openPanel(ptop('Objeto · ' + o.type, 'Catorce noches para <i>un piloto</i>') + `
+    <div class="cal" id="cal">${NIGHTS.map((_, i) => `<button type="button" data-n="${i}" class="${i < night ? 'seen' : ''}" aria-pressed="${i === night}">${i + 1}</button>`).join('')}</div>
+    <div class="card night" id="night"></div>
+    <div class="timer" id="timerBox">
+      <span class="kicker" style="color:color-mix(in srgb,var(--paper) 70%,transparent)">Tu turno · Modo Emilia</span>
+      <div class="clock" id="clock">25:00</div>
+      <p class="small" style="opacity:.85">25 minutos de foco para tu proyecto. Si sales de la pestaña antes de terminar, suena y el tiempo se detiene.</p>
+      <div class="alert" id="tAlert" hidden></div>
+      <div class="row"><button class="btn" type="button" id="tStart">Empezar mi noche 1</button><button class="btn ghost" type="button" id="tFast" style="color:var(--paper);border-color:var(--paper)">Versión demo: 25 s</button></div>
+    </div>
+    <p class="small muted">Valores ilustrativos: los definitivos los fija el área de guion.</p>`);
+  function drawNight() {
+    const n = NIGHTS[night];
+    $('#night').innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><b style="font-family:var(--f-display);font-size:1.4rem">Noche ${night + 1}</b><span class="chip accent">${n[0]}</span></div><p>${n[1]}</p>
+      <div class="stats"><div><span class="kicker">Páginas del piloto</span><br><b style="font-family:var(--f-mono)">${n[2]} / 28</b><div class="bar-p"><i style="width:${Math.min(100, n[2] / 31 * 100)}%"></i></div></div><div><span class="kicker">Notificaciones</span><br><span style="font-family:var(--f-mono);font-size:.9rem">atendidas ${n[3]} · <span style="color:var(--accent)">ignoradas ${n[4]}</span></span></div></div>
+      <div class="note n-y" style="transform:rotate(-1deg)">${n[5]}</div>`;
+    $$('#cal button').forEach((b, i) => { b.setAttribute('aria-pressed', i === night); b.classList.toggle('seen', i < night); });
+  }
+  drawNight();
+  $('#cal').addEventListener('click', e => { const b = e.target.closest('[data-n]'); if (b) { night = +b.dataset.n; drawNight(); } });
+  total = remaining = 25 * 60; leftTab = false;
+  const clock = () => $('#clock').textContent = fmt(remaining);
+  $('#tFast').addEventListener('click', () => { stopTimer(false); total = remaining = total === 25 ? 1500 : 25; $('#tFast').textContent = total === 25 ? 'Versión real: 25 min' : 'Versión demo: 25 s'; $('#tStart').textContent = 'Empezar mi noche 1'; clock(); });
+  $('#tStart').addEventListener('click', () => {
+    if (timer) { stopTimer(false); $('#tStart').textContent = 'Seguir'; return; }
+    try { audio = audio || new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
+    $('#tAlert').hidden = true; $('#tStart').textContent = 'Pausar';
+    timer = setInterval(() => {
+      remaining--; clock();
+      if (remaining <= 0) { stopTimer(false); remaining = 0; clock(); $('#tStart').textContent = 'Empezar otra noche'; remaining = total;
+        shareImage({ kind: 'noche', title: 'Noche 1 de mis 14', body: `${total === 25 ? '25 segundos' : '25 minutos'} de foco para mi proyecto`, sub: 'Modo Emilia' }); }
+    }, 1000);
+  });
+  clock();
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && timer) { stopTimer(false); leftTab = true; }
+  else if (!document.hidden && leftTab) { leftTab = false; beep(); const a = $('#tAlert'); if (a) { a.hidden = false; a.textContent = 'Saliste de la pestaña: el tiempo se detuvo. Como el Pomodoro de Emilia, vuelve y continúa.'; $('#tStart').textContent = 'Seguir'; } }
+});
+
+/* escucha */
+function pEscucha(o) {
+  let tab = 'escribir';
+  openPanel(ptop('Objeto · ' + o.type, 'Lo que Emilia escucha') + `<div class="toggle" role="group" aria-label="Pestaña" id="eTabs"><button type="button" data-t="escribir" aria-pressed="true">Para escribir</button><button type="button" data-t="dormir" aria-pressed="false">Para dormir</button></div><div id="eBody"></div>`);
+  function draw() {
+    $$('#eTabs button').forEach(b => b.setAttribute('aria-pressed', b.dataset.t === tab));
+    $('#eBody').innerHTML = tab === 'escribir'
+      ? `<p class="small muted">Su playlist en Spotify, incrustada en la web. Lista de ejemplo: la arma el área de sonido.</p><div class="tracks">${[['Lluvia sobre el techo', 'ambiente', '3:10'], ['Piano para la noche 5', 'instrumental', '4:02'], ['Combi a las 11 p. m.', 'lo-fi', '2:48'], ['La escena que no sale', 'instrumental', '3:35'], ['Página 28', 'ambiente', '5:12']].map((t, i) => `<div><span class="i">${i + 1}</span><span>${t[0]} <span class="muted small">· ${t[1]}</span></span><span class="small muted">${t[2]}</span></div>`).join('')}</div>`
+      : `<p class="small muted">El podcast con el que se duerme es el del proyecto. En pausa en su celular:</p><div class="tracks">${EPISODES.map((e, i) => `<div><span class="i">${i + 1}</span><span><b>${e[0]}</b> <span class="muted small">· ${e[1]}</span></span><span class="small ${i === 3 ? '' : 'muted'}">${i === 3 ? '❚❚ en pausa' : ''}</span></div>`).join('')}</div><a class="goto" href="#universo" data-go="universo"><span>Escuchar <i>Miradas distintas</i> y enviar tu pregunta</span><b>→</b></a>`;
+  }
+  draw();
+  $('#eTabs').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (b) { tab = b.dataset.t; draw(); } });
+}
+
+/* conexiones y lado personal */
+function pCasting(o) {
+  const c = [['Aspirante 1', 'Lee bien, pero sonríe cuando Lucía no sonreiría.'], ['Aspirante 2', 'Tiene la mirada. Llamarla otra vez.'], ['Aspirante 3', 'Llegó tarde y se disculpó con un discurso. ¿Es Lucía?'], ['Aspirante 4', 'Demasiada ladrona, poco sueño.']];
+  openPanel(ptop('Objeto · ' + o.type, 'La lista del casting') + `<p class="small muted">Apareció en el corcho después del fallo: Emilia ya está produciendo. Fotos del rodaje de la microserie.</p><div class="casting">${c.map(x => `<div class="cand"><div class="ph">${x[0]}</div><span class="margin">${x[1]}</span></div>`).join('')}</div><a class="goto" href="#universo" data-go="universo"><span>Mira el casting en <i>Modo Directora</i>, cap. 1 (TikTok)</span><b>→</b></a>`);
+}
+function pChat(o) {
+  openPanel(ptop('Objeto · ' + o.type, 'El chat en visto') + `<div class="chat"><span class="kicker" style="text-align:center">Ricardo</span>
+    <div class="bubble"><div class="flyer"><span class="kicker" style="color:#c9bfae">Cineclub · convocatoria</span><b>Casa Melón y Entretenimiento</b><span>Premio de producción total o parcial</span></div><small>8:41 p. m. ✓✓</small></div>
+    <div class="bubble">Mira esto. ¿Postulamos?<small>8:42 p. m. ✓✓ · Visto</small></div></div>
+    <p>No aporta información nueva: es la puerta a lo que pasó del otro lado del chat.</p>
+    <a class="goto" href="#universo" data-go="universo"><span>Por qué Ricardo no contestó: <i>El otro lado de Ricardo</i>, cap. 3</span><b>→</b></a>`);
+}
+function pPared(o) {
+  const p = [['La La Land', 'Damien Chazelle · 2016', '#5b6f8a', 'Elegir entre lo que amas y lo que te paga. La veo cuando dudo.'], ['Los Fabelman', 'Steven Spielberg · 2022', '#a7553d', 'Filmar a tu familia y descubrir lo que no querías ver. Así empecé yo.'], ['Saving Mr. Banks', 'John Lee Hancock · 2013', '#3e3a36', 'La escritora que no quería cambiar su historia. Ahora la entiendo demasiado.'], ['Como en el cine', 'Gonzalo Ladines · 2015', '#6f7d5e', 'Hacer una película con lo que tienes. Muy Lima, muy nosotros.']];
+  openPanel(ptop('Objeto · ' + o.type, 'Su pared de películas') + `<p class="small muted">Toca un póster para leer la nota de Emilia.</p><div class="posters">${p.map((x, i) => `<button type="button" class="poster" style="background:${x[2]}" data-pi="${i}"><span>${x[1]}</span><b>${x[0]}</b></button>`).join('')}</div><div class="note n-y" id="pNote" style="transform:rotate(-1deg)">Las películas que volvería a ver mil veces.</div>`);
+  $('#panel .posters').addEventListener('click', e => { const b = e.target.closest('[data-pi]'); if (b) $('#pNote').textContent = p[+b.dataset.pi][3]; });
+}
+function pCuaderno(o) {
+  openPanel(ptop('Objeto · ' + o.type, 'El cuaderno de mesas ajenas') + `<div class="notebook">
+    <p>Cafetería, mesa 4. Una pareja discute quién paga. Ganan los dos; pierde el mozo.</p>
+    <p>Combi a Miraflores. Un señor ensaya una disculpa en voz baja desde la Arequipa. Se baja sin llamar.</p>
+    <p>Cineclub, fila 2. Un chico se ríe un segundo antes que todos. Ya vio la película; vino a verla con alguien.</p>
+    <p>Cafetería otra vez. La señora de la mesa 3 lee el periódico de ayer. Dice que así ya sabe cómo terminan las cosas.</p>
+    <p>Paradero. Dos amigas planean un viaje que no van a hacer. Lo cuentan como si ya hubieran vuelto.</p>
+  </div><p class="small muted">De aquí salen sus personajes. Apuntes de ejemplo: los escribe guion.</p>`);
+}
+function pPagina(o) {
+  openPanel(ptop('Objeto · ' + o.type, 'La primera página del piloto') + `<div class="page script">
+    <div style="text-align:center"><b>LADRONA DE SUEÑOS</b><br>Episodio 1 · «El primer encargo»</div>
+    <p class="sl">1. INT. CUARTO DE LUCÍA – NOCHE</p>
+    <p>Una mesa cubierta de papeles con firmas que no son suyas. LUCÍA escribe a mano. Se detiene. Tacha una línea.</p>
+    <p class="ch">LUCÍA</p><p class="pa">(leyendo en voz baja)</p><p class="dl">«Prometo amarte en las buenas y en las malas…»</p>
+    <p class="margin" style="text-align:right">muy obvio → que lo diga sin decirlo</p>
+    <p>Su ABUELA asoma desde la puerta, con una taza en cada mano.</p>
+    <p class="ch">ABUELA</p><p class="dl">¿Otra boda?</p>
+    <p class="ch">LUCÍA</p><p class="dl">Otra boda. Esta paga el doble.</p>
+    <p class="ch">ABUELA</p><p class="dl">¿Y la tuya cuándo la escribes?</p>
+    <p>Lucía no contesta. Dobla la hoja en cuatro.</p>
+    <p class="margin">cortar aquí. Que el silencio haga el trabajo.</p>
+  </div><p class="small muted">Borrador de ejemplo. La página real la escribe el área de guion.</p>`);
+}
+
+/* ---------------- share image (1080×1920) ---------------- */
+function wrapText(ctx, text, x, y, maxW, lh) {
+  const words = text.split(' '); let line = '', yy = y;
+  for (const w of words) { const t = line ? line + ' ' + w : w; if (ctx.measureText(t).width > maxW && line) { ctx.fillText(line, x, yy); line = w; yy += lh; } else line = t; }
+  if (line) ctx.fillText(line, x, yy); return yy;
+}
+async function shareImage({ kind, title, body, sub }) {
+  try { await document.fonts.ready; } catch (e) {}
+  const c = document.createElement('canvas'); c.width = 1080; c.height = 1920; const x = c.getContext('2d');
+  const g = x.createLinearGradient(0, 0, 0, 1920); g.addColorStop(0, '#2e2840'); g.addColorStop(.6, '#7a4e4a'); g.addColorStop(1, '#e09a62'); x.fillStyle = g; x.fillRect(0, 0, 1080, 1920);
+  x.fillStyle = '#f6efe2'; x.font = '64px "Permanent Marker", cursive'; x.fillText('Yo, Emilia', 90, 190);
+  x.font = '30px "JetBrains Mono", monospace'; x.fillStyle = 'rgba(246,239,226,.75)';
+  x.fillText(kind === 'nota' ? 'MI NOTA PARA EL MURAL DE EMILIA' : kind === 'noche' ? 'MODO EMILIA' : kind === 'sello' ? 'YO ESTUVE EN EL ESTRENO' : '¿SABÍAS ESTO DE EMILIA?', 90, 250);
+  x.fillStyle = '#f6efe2'; x.font = '600 70px "Newsreader", Georgia, serif'; let yy = wrapText(x, title, 90, 420, 900, 84);
+  x.save(); x.translate(540, yy + 430); x.rotate(-0.04);
+  x.fillStyle = 'rgba(0,0,0,.25)'; x.fillRect(-390, -300, 800, 640); x.fillStyle = kind === 'noche' ? '#bdd8b4' : '#f4d873'; x.fillRect(-400, -310, 800, 640);
+  x.fillStyle = '#2a241f'; x.font = '700 64px "Caveat", cursive'; wrapText(x, body, -350, -200, 700, 76);
+  x.font = '36px "Instrument Sans", sans-serif'; x.fillText('— ' + sub, -350, 290); x.restore();
+  x.fillStyle = '#f6efe2'; x.font = '600 52px "Instrument Sans", sans-serif'; x.fillText('yoemilia.pe', 90, 1820);
+  openPanel(ptop('Imagen para historias · 1080 × 1920', kind === 'nota' ? 'Tu nota ya está en el mural' : 'Lista para compartir') + `<div class="share"></div><p class="small muted">${kind === 'nota' ? 'Se publica tras la moderación, en menos de 24 horas. La imagen enlaza al mural, así que ya puedes compartirla.' : 'En la web real, este botón abre el menú para compartir en Instagram, TikTok o WhatsApp.'}</p>`);
+  $('#panel .share').appendChild(c);
+}
+$('#stampBtn').addEventListener('click', () => shareImage({ kind: 'sello', title: 'Así fue la noche del estreno', body: 'Aquí va tu foto del evento, con el sello.', sub: 'El estreno · Yo, Emilia' }));
+
+/* ---------------- universo ---------------- */
+const STEPS = [['Redes sociales', 'Anuncian el evento'], ['Evento', 'Corto, conversatorio y brindis'], ['Cortometraje', 'La historia central'], ['Universo Yo, Emilia', 'Estás aquí'], ['Modo Directora', 'TikTok · 5 caps.'], ['Miradas distintas', 'Spotify · 5 episodios'], ['El otro lado de Ricardo', 'YouTube Shorts · 5 caps.']];
+const CROSS = [
+  ['El mensaje en visto', 'Corto ↔ El otro lado de Ricardo, cap. 3', 'En el corto, Emilia envía a Ricardo la foto del folleto y él nunca responde. En el capítulo 3 de la miniserie, Ricardo recibe esa convocatoria y, enseguida, un mensaje inesperado. Es el mismo instante visto desde los dos lados.'],
+  ['La reunión con el inversionista', 'Corto ↔ El otro lado de Ricardo, cap. 4', 'En el corto, Emilia rechaza cambiar el conflicto de su historia y se va. En el capítulo 4, Ricardo sigue adelante con el trato y recibe el mensaje que confirma la ruptura.'],
+  ['La publicación que Ricardo comparte', 'El otro lado de Ricardo, cap. 5 ↔ Modo Directora', 'En el capítulo 5, Ricardo ve que el nuevo proyecto de Emilia suma reproducciones y lo comparte. Esa publicación es un capítulo de Modo Directora: el final de una pieza abre la otra.']
+];
+let cross = 0;
+function renderUniverso() {
+  $('#steps').innerHTML = STEPS.map((s, i) => `<div class="step ${i === 3 ? 'here' : ''}"><span class="num">${i + 1}</span><b>${s[0]}</b><span class="small">${s[1]}</span></div>`).join('');
+  const X = i => `<button type="button" class="xbtn" data-x="${i}" aria-pressed="${cross === i}">Cruce ${i + 1}</button>`;
+  $('#lanes').innerHTML = `<div></div><div class="ph">Años antes</div><div class="ph">Durante el corto</div><div class="ph">Después del corto</div>
+    <div class="lane-name"><b>Cortometraje</b><span>Yo, Emilia</span></div><div class="lane-cell"></div><div class="lane-cell"><span class="seg-b main">De la cafetería al fallo del jurado</span></div><div class="lane-cell"></div>
+    <div class="lane-name"><b>El otro lado de Ricardo</b><span>YouTube Shorts · 5 caps.</span></div><div class="lane-cell"><span class="seg-b">Caps. 1–2 · su primer corto</span></div><div class="lane-cell"><span class="seg-b">Caps. 3–4</span>${X(0)}${X(1)}</div><div class="lane-cell"><span class="seg-b">Cap. 5</span>${X(2)}</div>
+    <div class="lane-name"><b>Modo Directora</b><span>TikTok · 5 caps.</span></div><div class="lane-cell"></div><div class="lane-cell"></div><div class="lane-cell"><span class="seg-b green">Caps. 1–5 · la producción del piloto</span></div>
+    <div class="lane-name"><b>Fuera de la ficción</b><span>real</span></div><div class="lane-cell"></div><div class="lane-cell"><span class="seg-b out">Evento · estreno</span></div><div class="lane-cell"><span class="seg-b out">Miradas distintas</span></div>`;
+  $('#vtl').innerHTML = `<span class="kicker">Años antes</span><div class="card small"><b>El otro lado de Ricardo</b> · caps. 1–2: su primer corto y su primera concesión</div>
+    <span class="kicker">Durante el corto</span><div class="card small"><b>Cortometraje <i>Yo, Emilia</i></b>: de la cafetería al fallo del jurado</div>${X(0)}${X(1)}
+    <span class="kicker">Después del corto</span><div class="card small"><b>Modo Directora</b> · caps. 1–5: la producción del piloto</div>${X(2)}
+    <span class="kicker">Fuera de la ficción</span><div class="card small">El evento y <i>Miradas distintas</i></div>`;
+  drawCross();
+  $('#weeks').innerHTML = WEEKS.slice(1).map(w => `<div class="wk ${w.n === week ? 'on' : ''}"><button type="button" data-wk="${w.n}" aria-expanded="${w.n === week}"><span><b>Semana ${w.n}</b> · ${w.eje}</span><span class="small muted">${w.n < week ? '✓ vista' : w.n === week ? 'en estreno' : 'próximamente'}</span></button>${w.n === week ? `<div class="body">${w.rel.map(r => `<div class="r"><span><b>${r[1]}</b> <span class="muted">${r[2]}</span></span><span class="chip">${r[0]} ↗</span></div>`).join('')}<div class="r"><span>Pregunta: <i>${w.q}</i></span></div><div class="r"><span>Nuevo en el cuarto: <b>${OBJECTS.find(o => o.id === w.obj).name}</b></span></div></div>` : ''}</div>`).join('');
+  const ep = Math.max(1, Math.min(5, week || 1));
+  $('#podEp').innerHTML = `Ep. ${ep} · <b>${EPISODES[ep - 1][0]}</b>: «${EPISODES[ep - 1][1]}»`;
+  $('#podNext').textContent = week < 5 ? `Tu pregunta para el próximo invitado: ${EPISODES[Math.min(4, week)][0]}` : 'Tu pregunta para la próxima temporada';
+}
+function drawCross() { const c = CROSS[cross]; $('#xinfo').innerHTML = `<span class="kicker">Cruce ${cross + 1} · ${c[1]}</span><b style="font-family:var(--f-display);font-size:1.3rem">${c[0]}</b><p>${c[2]}</p>`; $$('[data-x]').forEach(b => b.setAttribute('aria-pressed', +b.dataset.x === cross)); }
+$('#v-universo').addEventListener('click', e => {
+  const x = e.target.closest('[data-x]'); if (x) { cross = +x.dataset.x; drawCross(); }
+  const w = e.target.closest('[data-wk]'); if (w) { week = +w.dataset.wk; store.set('week', week); renderAll(); }
+});
+let podT = null;
+$('#podPlay').addEventListener('click', () => { if (podT) { clearInterval(podT); podT = null; $('#podPlay').textContent = '▶'; return; } let s = 45; $('#podPlay').textContent = '❚❚'; podT = setInterval(() => { s--; $('#podTime').textContent = `0:${String(s).padStart(2, '0')}`; if (s <= 0) { clearInterval(podT); podT = null; $('#podPlay').textContent = '▶'; $('#podTime').textContent = '0:45'; } }, 1000); toast('Demo: en la web real suena el adelanto del episodio.'); });
+$('#podForm').addEventListener('submit', e => { e.preventDefault(); e.target.reset(); toast('Pregunta recibida. Si la eligen, la responden en el episodio y te nombran.'); });
+$('#contactForm').addEventListener('submit', e => { e.preventDefault(); e.target.reset(); toast('Demo: en la web real el mensaje llega al correo del proyecto.'); });
+
+/* ---------------- boot ---------------- */
+function renderAll() { renderWeekSeg(); renderInicio(); renderHistoria(); renderRoom(); renderUniverso(); }
+renderCast(); renderAll(); teaser();
+const h = (location.hash || '').slice(1);
+go(VIEWS.includes(h) ? h : 'inicio', false);
+})();
+</script>
+
+</body>
+</html>

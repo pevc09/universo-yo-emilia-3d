@@ -1,0 +1,6 @@
+# El documento del proyecto vive en Google Docs; no se versiona aquí
+original/doc.txt
+original/doc2.txt
+# temporales
+*.tmp
+site/videos/zz_*

@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "yo-emilia", "runtimeExecutable": "C:/Users/Pablo/SkillsHub/python/python.exe", "runtimeArgs": ["tools/server.py", "8377"], "port": 8377 }
+  ]
+}
