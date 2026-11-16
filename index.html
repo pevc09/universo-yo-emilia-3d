@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Universo Yo, Emilia</title>
+<meta name="description" content="Recorre los espacios de Yo, Emilia: la cafetería, el cineclub, su cuarto y su mural. El universo transmedia del cortometraje, Lima 2026.">
+<meta name="theme-color" content="#0b0d14">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 fill=%27%230b0d14%27/%3E%3Crect x=%277%27 y=%277%27 width=%2718%27 height=%2718%27 fill=%27%23f4d873%27 transform=%27rotate(-6 16 16)%27/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600;700&family=Caveat:wght@500;700&family=Courier+Prime:wght@400;700&family=Permanent+Marker&display=swap">
+<link rel="stylesheet" href="css/panels.css">
+<link rel="stylesheet" href="css/style.css">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"}}</script>
+</head>
+<body class="booting">
+
+<div id="loader" role="status" aria-live="polite">
+  <p class="loader-title">Yo, Emilia</p>
+  <p class="loader-line" id="loaderLine">Preparando el set</p>
+  <div class="loader-bar"><i id="loaderBar"></i></div>
+</div>
+
+<canvas id="gl" aria-hidden="true"></canvas>
+<div id="shade" aria-hidden="true"></div>
+
+<header id="hud">
+  <a class="brand" href="#inicio" data-goto="inicio"><span>Universo</span> Yo, Emilia</a>
+  <p class="slug" aria-live="polite"><span id="slugNum"></span><span id="slug"></span></p>
+  <button id="menuBtn" type="button" aria-expanded="false" aria-controls="menu">Escenas</button>
+</header>
+
+<nav id="escaleta" aria-label="Escenas del recorrido"></nav>
+
+<main id="track">
+
+  <section class="scene" id="inicio" data-scene="inicio" aria-label="Inicio">
+    <div class="beat title" data-a="0" data-b="0.46">
+      <h1>Yo, Emilia</h1>
+      <p class="lema">El rechazo no es el final de la historia.</p>
+      <p class="meta">Un cortometraje y su universo. Lima, 2026.</p>
+      <p class="scroll-cue"><span></span>Baja para entrar al universo</p>
+    </div>
+    <div class="beat" data-a="0.52" data-b="1">
+      <h2>¿Acabas de ver el corto?</h2>
+      <p>Esto es lo que no te contamos. Recorre los espacios de Emilia: la cafetería, el cineclub, su cuarto y su mural.</p>
+      <div class="week-strip">
+        <p class="label" id="stripTitle"></p>
+        <ul id="strip"></ul>
+      </div>
+      <p class="acts"><a class="act" href="#archivo" data-goto="archivo">Ir al cuarto de Emilia</a><a class="act ghost" href="#mural" data-goto="mural">Pegar una nota en el mural</a></p>
+    </div>
+  </section>
+
+  <section class="scene" id="historia" data-scene="historia" aria-label="La historia">
+    <div class="beat" data-a="0.05" data-b="0.34">
+      <h2>Una historia propia, a cualquier costo</h2>
+      <p>Emilia, una joven cineasta recién egresada, quiere hacer su primer largometraje con Ricardo, el productor con el que trabaja hace años. Lo llama <i>La ladrona de sueños</i>.</p>
+    </div>
+    <div class="beat" data-a="0.39" data-b="0.68">
+      <p class="big">Sus postulaciones a fondos y convocatorias vuelven rechazadas.</p>
+      <p>Ricardo cree que el problema está en la historia. Luego llega un inversionista: financia la película si Emilia cambia el conflicto central.</p>
+      <p class="quote">«Hay mucho dinero de por medio.» <span>Ricardo</span></p>
+      <p class="acts"><button class="act" type="button" data-panel="actos">Leer la historia en tres actos</button></p>
+    </div>
+    <div class="beat" data-a="0.73" data-b="1">
+      <h3>El tema</h3>
+      <p>Las dificultades y decisiones que enfrentan los realizadores audiovisuales para sacar adelante sus proyectos dentro de la industria.</p>
+      <ul class="facts"><li>Inspiracional, drama y comedia</li><li>Cortometraje de ficción, 20 minutos</li><li>Lima, julio y agosto de 2026</li></ul>
+    </div>
+  </section>
+
+  <section class="scene" id="personajes" data-scene="personajes" aria-label="Personajes">
+    <div class="beat" data-a="0.05" data-b="0.4">
+      <h2>Quién es quién</h2>
+      <p>Con Romina, su prima, Emilia piensa en voz alta. Aquí no hay fondos ni jurados: solo alguien que la conoce desde siempre.</p>
+    </div>
+    <div class="beat" data-a="0.5" data-b="1">
+      <h3>Cuatro retratos</h3>
+      <p>Toca un retrato de la pared para abrir su ficha.</p>
+      <ul class="cast-list" id="castList"></ul>
+      <p class="acts"><button class="act ghost" type="button" data-panel="crew">El equipo del piloto</button></p>
+    </div>
+  </section>
+
+  <section class="scene" id="universo" data-scene="universo" aria-label="Universo transmedia">
+    <div class="beat" data-a="0.05" data-b="0.3">
+      <h2>El recorrido completo</h2>
+      <p>Al salir del trabajo, Emilia entra a un cineclub. Cuando termina la función reparten un folleto: una convocatoria para pilotos de serie.</p>
+    </div>
+    <div class="beat" data-a="0.35" data-b="0.62">
+      <h3>Siete experiencias, una sola historia</h3>
+      <p>El corto, la microserie <i>Modo Directora</i>, la miniserie <i>El otro lado de Ricardo</i>, el podcast <i>Miradas distintas</i> y este sitio. Estás en la cuarta parada.</p>
+      <p class="acts"><button class="act" type="button" data-panel="trailer">Ver el tráiler</button><button class="act ghost" type="button" data-panel="universo">Línea de tiempo y cruces</button></p>
+    </div>
+    <div class="beat" data-a="0.67" data-b="1">
+      <h3 id="weekTitle"></h3>
+      <ul class="releases" id="releases"></ul>
+      <p class="acts"><button class="act" type="button" data-panel="podcast">Enviar una pregunta al podcast</button><button class="act ghost" type="button" data-panel="semanas">Calendario de estrenos</button></p>
+    </div>
+  </section>
+
+  <section class="scene" id="archivo" data-scene="archivo" aria-label="El archivo de Emilia">
+    <div class="beat" data-a="0.03" data-b="0.2">
+      <h2>El archivo de Emilia</h2>
+      <p>Su cuarto, tal como quedó en el rodaje. Nueve objetos se abren al tocarlos; cada semana aparece uno nuevo.</p>
+      <p class="acts"><button class="act ghost" type="button" data-panel="objetos" id="objCount"></button></p>
+    </div>
+    <div class="beat" data-a="0.24" data-b="0.44">
+      <h3>Su lado personal</h3>
+      <p>Las películas que volvería a ver mil veces y el cuaderno donde apunta a la gente que observa. De ahí salen sus personajes.</p>
+    </div>
+    <div class="beat" data-a="0.48" data-b="0.7">
+      <h3>El escritorio</h3>
+      <p>Catorce noches para escribir un piloto. La carpeta de <i>Ladrona de sueños</i>, el chat que Ricardo dejó en visto y la primera página.</p>
+    </div>
+    <div class="beat" data-a="0.74" data-b="0.97">
+      <h3>Antes de dormir</h3>
+      <p>Lo que escucha para escribir, el podcast con el que se duerme y el calendario con la fecha de entrega encerrada en rojo.</p>
+    </div>
+  </section>
+
+  <section class="scene" id="mural" data-scene="mural" aria-label="El mural">
+    <div class="beat" data-a="0.05" data-b="0.3">
+      <h2>El mural</h2>
+      <p class="label" id="qLabel"></p>
+      <p class="big" id="qText"></p>
+      <p class="acts"><button class="act" type="button" data-open="mural">Pegar mi nota en el mural</button></p>
+    </div>
+    <div class="beat" data-a="0.36" data-b="0.62">
+      <h3>Diez notas, diez capítulos</h3>
+      <p>Las notas del corcho son la escaleta de <i>Ladrona de sueños</i>: una por capítulo. Lucía escribe por encargo lo que otros firman, hasta que se atreve a firmar ella.</p>
+    </div>
+    <div class="beat" data-a="0.67" data-b="0.95">
+      <h3>La nota suelta</h3>
+      <p>«Potenciar evolución de Lucía». El cambio de su personaje necesitaba tiempo. Por eso dejó de ser película y se volvió serie.</p>
+    </div>
+  </section>
+
+  <section class="scene" id="estreno" data-scene="estreno" aria-label="El estreno">
+    <div class="beat" data-a="0.05" data-b="0.3">
+      <h2>La sala del jurado</h2>
+      <p>Una semana después, Emilia llega a dar su pitch en Casa Melón. Sin socio, con la carpeta sobre las piernas y Romina al teléfono.</p>
+    </div>
+    <div class="beat" data-a="0.36" data-b="0.66">
+      <p class="label">13 de agosto de 2026</p>
+      <p class="big">Asunto: Fallo final del jurado</p>
+      <p class="acts"><button class="act" type="button" data-panel="fallo">Abrir el correo</button></p>
+    </div>
+    <div class="beat" data-a="0.71" data-b="1">
+      <h3>Así fue la noche del estreno</h3>
+      <p>Proyección del corto, conversatorio y brindis. Las notas del mural físico ya están en el cuarto de Emilia.</p>
+      <p class="acts"><button class="act" type="button" data-panel="estreno">Ver la noche del estreno</button><button class="act ghost" type="button" data-panel="sello">Compartir mi foto con el sello</button></p>
+    </div>
+  </section>
+
+  <section class="scene" id="equipo" data-scene="equipo" aria-label="Equipo y contacto">
+    <div class="beat credits" data-a="0.08" data-b="0.52">
+      <h2>Quiénes hacemos esto</h2>
+      <dl class="credit-roles">
+        <div><dt>Dirección y guion</dt><dd>Luana Gómez Sánchez</dd></div>
+        <div><dt>Producción</dt><dd>Jeyday Olaya Morán</dd></div>
+        <div><dt>Dirección de fotografía</dt><dd>Marco Rosa Quispe</dd></div>
+        <div><dt>Dirección de arte</dt><dd>Jacob Domínguez Hurtado</dd></div>
+        <div><dt>Asistencia de arte</dt><dd>Karem Conislla Guerrero</dd></div>
+        <div><dt>Sonido</dt><dd>Oscar Peralta Jiménez</dd></div>
+        <div><dt>Edición</dt><dd>Pablo Vargas</dd></div>
+      </dl>
+    </div>
+    <div class="beat" data-a="0.58" data-b="1.01">
+      <h3>Escríbenos</h3>
+      <form class="contact" id="contactForm">
+        <label for="cMail">Tu correo</label><input type="email" id="cMail" required autocomplete="email">
+        <label for="cMsg">Mensaje</label><textarea id="cMsg" required rows="3"></textarea>
+        <button class="act" type="submit">Enviar mensaje</button>
+      </form>
+      <p class="meta">Redes oficiales: Instagram, TikTok, YouTube y Spotify.</p>
+      <p class="acts"><a class="act ghost" href="#inicio" data-goto="inicio">Volver al inicio</a></p>
+    </div>
+  </section>
+
+</main>
+
+<div id="hotspots"></div>
+
+<aside id="menu" aria-label="Escenas" hidden>
+  <div class="menu-in">
+    <div class="menu-top"><p class="label">Escenas del recorrido</p><button class="x" type="button" id="menuClose" aria-label="Cerrar">×</button></div>
+    <ol id="sceneList"></ol>
+    <div class="sim">
+      <p class="label">Simular la semana (demo)</p>
+      <div class="seg" id="weekSeg" role="group" aria-label="Semana"></div>
+      <p class="small">Cada semana aparece un objeto nuevo en el cuarto y cambia la pregunta del mural.</p>
+    </div>
+  </div>
+</aside>
+
+<div class="scrim" id="scrim" hidden><div class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="panelTitle"></div></div>
+<div class="toast" id="toast" role="status" hidden></div>
+<video id="vidMontaje" src="videos/montaje.mp4" muted loop playsinline preload="none" hidden></video>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollToPlugin.min.js"></script>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
