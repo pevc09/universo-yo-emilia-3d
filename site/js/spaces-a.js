@@ -56,7 +56,7 @@ export function calle() {
     x.font = 'italic 30px "Newsreader", serif'; wrap(x, 'El rechazo no es el final de la historia.', w / 2, 500, 400, 38, 'center');
     x.font = '22px "Courier Prime", monospace'; x.fillText('UN CORTOMETRAJE · LIMA 2026', w / 2, 700);
   });
-  const mupi = new THREE.Group(); mupi.position.set(5.0, 0.16, 5.5); mupi.rotation.y = -Math.PI / 2 + 0.25; g.add(mupi);
+  const mupi = new THREE.Group(); g.userData.mupi = mupi; mupi.position.set(5.0, 0.16, 5.5); mupi.rotation.y = -Math.PI / 2 + 0.25; g.add(mupi);
   box(mupi, 1.4, 2.1, 0.16, pole, 0, 1.35, 0); quad(mupi, 1.24, 1.86, glow(afiche, 0.9), 0, 1.38, 0.085); box(mupi, 0.12, 0.3, 0.12, pole, 0, 0.15, 0);
 
   /* Cielos */

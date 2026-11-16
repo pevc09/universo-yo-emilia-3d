@@ -287,8 +287,8 @@ export function melon() {
   /* Rótulo retroiluminado */
   const logo = canvasTex(1024, 512, (x, w, h) => {
     x.fillStyle = '#ff8a52'; x.beginPath(); x.arc(170, 220, 96, 0, 7); x.fill(); x.fillStyle = '#ffc49a'; x.beginPath(); x.arc(170, 220, 60, 0, 7); x.fill(); x.fillStyle = '#ff8a52'; x.beginPath(); x.arc(170, 220, 24, 0, 7); x.fill();
-    x.fillStyle = '#ffb07c'; x.font = '118px "Permanent Marker", cursive'; x.fillText('Casa Melón', 300, 256);
-    x.fillStyle = '#ffd9bd'; x.font = '38px "Courier Prime", monospace'; x.fillText('Y ENTRETENIMIENTO · CONVOCATORIA 2026', 76, 400);
+    x.fillStyle = '#ffb07c'; x.font = '118px "Permanent Marker", cursive'; x.fillText('Yo, Emilia', 300, 256);
+    x.fillStyle = '#ffd9bd'; x.font = '38px "Courier Prime", monospace'; x.fillText('NOCHE DE ESTRENO · LIMA, 2026', 76, 400);
   });
   box(g, 4.6, 1.9, 0.08, mat('#141820', { rough: 0.6 }), 0, 2.1, -D / 2 + 0.05);
   quad(g, 4.2, 2.1, glow(logo, 1.5, { transparent: true, depthWrite: false }), 0, 2.1, -D / 2 + 0.1);
@@ -297,7 +297,7 @@ export function melon() {
   const glass = mat('#dfeef0', { rough: 0.05, transparent: true, opacity: 0.3 });
   [-1.15, 0, 1.15].forEach((x, i) => {
     chair(g, x, -3.3, 0, fab, metal, { w: 0.5 });
-    const plate = signTex(['JURADO ' + (i + 1)], { w: 256, h: 80, bg: '#f1ece0', fg: '#1b1b1b', font: '"Courier Prime", monospace', size: 34 });
+    const plate = signTex([['DIRECCIÓN', 'PRODUCCIÓN', 'INVITADO'][i]], { w: 256, h: 80, bg: '#f1ece0', fg: '#1b1b1b', font: '"Courier Prime", monospace', size: 34 });
     const p = box(g, 0.24, 0.07, 0.02, mat('#f1ece0'), x, 0.845, -2.3); p.rotation.x = -0.3; quad(g, 0.24, 0.07, mat(plate, { rough: 0.8 }), x, 0.846, -2.288).rotation.x = -0.3;
     cyl(g, 0.03, 0.026, 0.11, glass, x + 0.32, 0.86, -2.55, 12); quad(g, 0.21, 0.297, mat('#f1ecdf', { rough: 0.9 }), x - 0.05, 0.807, -2.6, 'y+', rnd(-0.2, 0.2));
     cyl(g, 0.045, 0.055, 0.015, metal, x - 0.34, 0.812, -2.7, 14); cyl(g, 0.006, 0.006, 0.26, metal, x - 0.34, 0.94, -2.7, 6);
@@ -307,9 +307,9 @@ export function melon() {
   const tape = mat('#f1e3a8', { rough: 0.7 }); box(g, 0.5, 0.004, 0.05, tape, 0, 0.004, 1.2, 0.785, false); box(g, 0.5, 0.004, 0.05, tape, 0, 0.004, 1.2, -0.785, false);
   /* Pantalla con la portada del proyecto */
   const slide = canvasTex(1024, 576, (x, w, h) => {
-    x.fillStyle = '#f4efe3'; x.fillRect(0, 0, w, h); x.fillStyle = '#6f6558'; x.font = '26px "Courier Prime", monospace'; x.textAlign = 'center'; x.fillText('CONVOCATORIA CASA MELÓN Y ENTRETENIMIENTO · PILOTO DE SERIE', w / 2, 120);
-    x.fillStyle = '#221d19'; x.font = '600 110px "Newsreader", serif'; x.fillText('Ladrona de sueños', w / 2, 300); x.font = 'italic 40px "Newsreader", serif'; x.fillText('Piloto de serie · 10 capítulos', w / 2, 370);
-    x.fillStyle = '#b3442a'; x.font = '700 56px "Caveat", cursive'; x.fillText('Dirección y producción: Emilia', w / 2, 470);
+    x.fillStyle = '#f4efe3'; x.fillRect(0, 0, w, h); x.fillStyle = '#6f6558'; x.font = '26px "Courier Prime", monospace'; x.textAlign = 'center'; x.fillText('VIDEO RESUMEN DEL EVENTO', w / 2, 120);
+    x.fillStyle = '#221d19'; x.font = '600 110px "Newsreader", serif'; x.fillText('Así fue la noche', w / 2, 300); x.font = 'italic 40px "Newsreader", serif'; x.fillText('Proyección · conversatorio · brindis', w / 2, 370);
+    x.fillStyle = '#b3442a'; x.font = '700 56px "Caveat", cursive'; x.fillText('El estreno de Yo, Emilia', w / 2, 470);
   });
   const sc = new THREE.Group(); sc.position.set(-3.0, 0, 0.3); sc.rotation.y = 1.0; g.add(sc);
   box(sc, 2.5, 1.45, 0.04, mat('#0b0b0c', { rough: 0.8 }), 0, 1.75, 0); quad(sc, 2.4, 1.35, glow(slide, 0.75), 0, 1.75, 0.022);
