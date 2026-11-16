@@ -67,7 +67,7 @@ if (q.get('shot')) {
 if (q.get('sheet')) {
   const ts = (q.get('ts') || '0.15,0.6').split(',').map(Number), only = q.get('only');
   const list = []; for (const sc of SCENES) if (!only || only === sc.id) for (const t of ts) list.push([sc.id, t]);
-  const cols = +(q.get('cols') || 4), tw = Math.floor(1280 / cols), th = Math.round(tw * 9 / 16);
+  const cols = +(q.get("cols") || 4), tw = Math.floor(1280 / cols), th = Math.round(tw * H / W);
   const out = document.createElement('canvas'); out.width = cols * tw; out.height = Math.ceil(list.length / cols) * th; out.style.cssText = 'position:fixed;inset:0;width:100vw;height:auto;z-index:5';
   document.body.appendChild(out); const x = out.getContext('2d');
   list.forEach(([id, t], i) => {

@@ -8,7 +8,12 @@ import { sound } from './audio.js';
 const gsap = window.gsap, ScrollTrigger = window.ScrollTrigger;
 gsap.registerPlugin(ScrollTrigger, window.ScrollToPlugin);
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const small = matchMedia('(max-width: 760px)').matches;
+const small = matchMedia("(max-width: 760px)").matches;
+const touch = matchMedia("(pointer: coarse)").matches, lowGPU = small || touch;
+ScrollTrigger.config({ ignoreMobileResize: true });
+/* alto del lienzo: en teléfonos se usa el alto grande (sin la barra del navegador) para que no salte al hacer scroll */
+const probe = Object.assign(document.createElement("div"), { style: "position:fixed;left:-9px;top:0;width:1px;height:100lvh;pointer-events:none;visibility:hidden" }); document.body.appendChild(probe);
+const viewH = () => touch ? Math.max(innerHeight, probe.offsetHeight || 0) : innerHeight;
 const NOTE = ['#f4d873', '#f1b4a3', '#bdd8b4', '#b8d0e8', '#d9c9ec', '#ff8a52', '#f1b4a3'];
 const loaderStep = (pct, msg) => { $('#loaderBar').style.width = pct + '%'; if (msg) $('#loaderLine').textContent = msg; };
 const smooth = u => { u = Math.min(1, Math.max(0, u)); return u * u * (3 - 2 * u); };
@@ -74,6 +79,22 @@ const panels = {
     openPanel(ptop('06 · El estreno', 'Así fue la <i>noche</i>') + `<p class="small muted">Evidencia del evento: proyección del corto, conversatorio y brindis.</p>
       <div class="gallery"><div class="big">Video resumen del evento</div><div>Foto · proyección</div><div>Foto · conversatorio</div><div>Foto · mural físico</div><div>Foto · brindis</div></div>
       <a class="goto" href="#mural" data-go="mural"><span>Las notas del mural físico ya están en el cuarto de Emilia</span><b>→</b></a>`);
+  },
+  /* en el celular, la línea de tiempo y el calendario se abren en una hoja aparte */
+  linea() {
+    const X = i => `<button type="button" class="xbtn" data-px="${i}">Cruce ${i + 1}</button>`;
+    openPanel(ptop('Universo transmedia', 'Antes, durante y <i>después</i> del corto') + `<div class="vtl" style="display:grid;gap:10px">
+      <span class="kicker">Años antes</span><div class="card small"><b>El otro lado de Ricardo</b> · caps. 1–2: su primer corto y su primera concesión</div>
+      <span class="kicker">Durante el corto</span><div class="card small"><b>Cortometraje <i>Yo, Emilia</i></b>: de la cafetería al fallo del jurado</div><div>${X(0)} ${X(1)}</div>
+      <span class="kicker">Después del corto</span><div class="card small"><b>Modo Directora</b> · caps. 1–5: la producción del piloto</div><div>${X(2)}</div>
+      <span class="kicker">Fuera de la ficción</span><div class="card small">El evento y <i>Miradas distintas</i></div></div><div class="xinfo" id="pxinfo"></div>`);
+    let k = 0; const draw = () => { const c = CROSS[k]; $('#pxinfo').innerHTML = `<span class="kicker">Cruce ${k + 1} · ${c[1]}</span><b style="font-family:var(--f-display);font-size:1.25rem">${c[0]}</b><p>${c[2]}</p>`; $$('#panel [data-px]').forEach(b => b.setAttribute('aria-pressed', +b.dataset.px === k)); };
+    draw(); $('#panel').addEventListener('click', e => { const b = e.target.closest('[data-px]'); if (b) { k = +b.dataset.px; draw(); } });
+  },
+  semanas() {
+    const n = week();
+    openPanel(ptop('Calendario de estrenos', 'Cinco semanas, <i>una pregunta</i> cada una') + `<div class="weeks">${WEEKS.slice(1).map(x => `<div class="wk ${x.n === n ? 'on' : ''}"><button type="button" data-pwk="${x.n}"><span><b>Semana ${x.n}</b> · ${x.eje}</span><span class="small muted">${x.n < n ? '✓ vista' : x.n === n ? 'en estreno' : 'próximamente'}</span></button>${x.n === n ? `<div class="body">${x.rel.map(r => `<div class="r"><span><b>${r[1]}</b> <span class="muted">${r[2]}</span></span><span class="chip">${r[0]}</span></div>`).join('')}<div class="r"><span>Pregunta: <i>${x.q}</i></span></div></div>` : ''}</div>`).join('')}</div>`);
+    $('#panel').addEventListener('click', e => { const b = e.target.closest('[data-pwk]'); if (b) { applyWeek(+b.dataset.pwk); panels.semanas(); } });
   },
   sello() { shareImage({ kind: 'sello', title: 'Así fue la noche del estreno', body: 'Aquí va tu foto del evento, con el sello.', sub: 'El estreno · Yo, Emilia' }); }
 };
@@ -150,14 +171,14 @@ await loadFonts();
 loaderStep(35, 'Montando los sets');
 await new Promise(r => setTimeout(r, 30));
 const canvas = $('#gl'), teaser = $('#teaser');
-let dpr = Math.min(devicePixelRatio || 1, small ? 1.4 : 1.6);
+let dpr = Math.min(devicePixelRatio || 1, lowGPU ? 1.25 : 1.6);
 const forceLite = new URLSearchParams(location.search).has('lite');
-try { if (!forceLite) stage = createStage(canvas, { width: Math.max(2, innerWidth), height: Math.max(2, innerHeight), dpr, shadows: small ? 1024 : 2048, ao: !small }); }
+try { if (!forceLite) stage = createStage(canvas, { width: Math.max(2, innerWidth), height: Math.max(2, viewH()), dpr, shadows: lowGPU ? 1024 : 2048, ao: !lowGPU }); }
 catch (err) { console.warn('Sin WebGL: se muestra la versión sin 3D.', err); }
 
 if (!stage) {
   document.body.classList.add('lite'); SCENES.forEach(s => $('#' + s.id).style.setProperty('--poster', `url(videos/${s.id}.jpg)`));
-  $('#slug').textContent = 'UNIVERSO YO, EMILIA'; document.body.classList.remove('booting');
+  document.body.classList.remove("booting");
 } else {
   const cuarto = stage.spaces.cuarto; cuarto.setWeek(week());
   userNotes.forEach(n => cuarto.addPublicNote(n));
@@ -190,9 +211,10 @@ if (!stage) {
   const look = { x: 0, y: 0, tx: 0, ty: 0 };
   if (!reduce && matchMedia('(pointer: fine)').matches) addEventListener('pointermove', e => { look.tx = (e.clientX / innerWidth) * 2 - 1; look.ty = -((e.clientY / innerHeight) * 2 - 1); });
 
-  let curI = -1, intro = { f: 0 }, slow = 0, frames = 0, sw = innerWidth, sh = innerHeight, entered = false;
+  let curI = -1, intro = { f: 0 }, slow = 0, frames = 0, sw = innerWidth, sh = viewH(), entered = false;
   function frame(time, dt) {
-    if (innerWidth !== sw || innerHeight !== sh) { sw = innerWidth; sh = innerHeight; if (sw > 0 && sh > 0) { stage.resize(sw, sh, dpr); ScrollTrigger.refresh(); } }
+    /* en el teléfono, la barra del navegador cambia el alto al hacer scroll: solo se reajusta si cambia el ancho o mucho el alto */
+    if (innerWidth !== sw || Math.abs(viewH() - sh) > (touch ? 160 : 0)) { sw = innerWidth; sh = viewH(); if (sw > 0 && sh > 0) { stage.resize(sw, sh, dpr); ScrollTrigger.refresh(); } }
     if (sw < 2 || sh < 2) return;
     const k = jump || reduce ? 1 : 1 - Math.exp(-dt / 1000 * 5.5); jump = false;
     p += (target - p) * k; if (Math.abs(target - p) < 1e-5) p = target;
