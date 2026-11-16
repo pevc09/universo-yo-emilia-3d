@@ -1,16 +1,16 @@
 # Universo Yo, Emilia — recorrido 3D
 
 Versión inmersiva del sitio: el scroll mueve una cámara por los espacios del corto.
-Las siete secciones del sitio original se recorren en orden, cada una en el espacio que le corresponde:
+Casi todo el recorrido pasa en el cuarto de Emilia, en un solo plano secuencia; al final se sale a la ciudad:
 
 | Sección | Espacio | Luz |
 |---|---|---|
-| Inicio | teaser (imagen de Gemini en movimiento) que se disuelve en la calle de Lima | atardecer que cae a noche |
-| La historia | cafetería, y luego el cineclub que proyecta el corto | día frío / sala oscura |
-| Personajes | restaurante con los cuatro retratos | hora dorada por los arcos |
-| El archivo de Emilia | su cuarto y el mural | atardecer que se vuelve noche |
-| Universo transmedia | la calle de noche con pantallas de TikTok, YouTube Shorts y Spotify | neón |
-| El estreno | sala de la noche de estreno | guirnaldas cálidas |
+| Inicio | teaser (imagen de Gemini en movimiento) que se disuelve en el cuarto; termina en las notas del público | atardecer |
+| La historia | su escritorio; la laptop proyecta el corto | atardecer |
+| Personajes | cuatro polaroids en la pared, sobre el estante | atardecer que se apaga |
+| El archivo de Emilia y el mural | sus objetos y el corcho | del atardecer a la noche |
+| Universo transmedia | Lima de noche: pantallas verticales que se deslizan como un feed (TikTok, YouTube Shorts), un ecualizador gigante (podcast), la línea de tiempo pintada en las ventanas de un edificio y las notas del mural volando | neón |
+| El estreno | función al aire libre proyectada sobre la fachada del café | guirnaldas cálidas |
 | Equipo y contacto | Lima al amanecer | amanecer |
 
 Cada escena tiene su propio sonido ambiente, sintetizado en el navegador (`js/audio.js`). Se activa con «Entrar con sonido» o con el botón «Sonido».
@@ -18,8 +18,8 @@ Cada escena tiene su propio sonido ambiente, sintetizado en el navegador (`js/au
 ## Carpetas
 - `site/` — el sitio listo para publicar (GitHub Pages: subir el contenido de esta carpeta).
   - `index.html`, `css/`, `js/` — página, estilos y código.
-  - `js/spaces-a.js`, `js/spaces-b.js` — los espacios modelados por código (Three.js).
-  - `js/spaces-c.js` — capa cinematográfica: rayos de luz, polvo, cambios de luz con el scroll, pantallas del universo y la sala del estreno.
+  - `js/spaces-a.js` (calle) y `js/spaces-b.js` (cuarto) — los espacios modelados por código (Three.js). Los demás espacios de esos archivos (cafetería, restaurante, cineclub, sala) ya no se usan.
+  - `js/spaces-c.js` — el recorrido actual: cámaras y luces del cuarto, polaroids de personajes, y la ciudad del universo transmedia y del estreno.
   - `js/stage.js` — orden de escenas (`SCENES`) y corrección de color.
   - `js/data.js` — textos y datos (semanas, objetos, personajes, notas).
   - `img/teaser.jpg` — imagen generada con Gemini para el teaser; `img/portada.webp` — afiche del corto.

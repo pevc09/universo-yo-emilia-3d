@@ -34,10 +34,9 @@
 
 <header id="hud">
   <a class="brand" href="#inicio" data-goto="inicio"><span>Universo</span> Yo, Emilia</a>
-  <p class="slug" aria-live="polite"><span id="slugNum"></span><span id="slug"></span></p>
   <div class="hud-btns">
     <button id="soundBtn" type="button" aria-pressed="false">Sonido: no</button>
-    <button id="menuBtn" type="button" aria-expanded="false" aria-controls="menu">Escenas</button>
+    <button id="menuBtn" type="button" aria-expanded="false" aria-controls="menu">Menú</button>
   </div>
 </header>
 <div id="simbar"><span class="label">Demo: simula la semana</span><div class="seg weekseg" role="group" aria-label="Semana"></div></div>
@@ -67,20 +66,17 @@
   </section>
 
   <section class="scene" id="historia" aria-label="La historia">
-    <div class="beat onscene" data-a="0.05" data-b="0.5">
+    <div class="beat onscene" data-a="0.04" data-b="0.36">
       <p class="label">02 · La historia</p>
       <h2>Una historia propia, a cualquier costo</h2>
       <div class="chips"><span class="chip">Inspiracional</span><span class="chip">Drama</span><span class="chip">Comedia</span><span class="chip">Lima, 2026</span></div>
       <p>Emilia, una joven cineasta recién egresada, quiere hacer su primer largometraje con Ricardo, el productor con el que trabaja hace años. Cuando un inversionista ofrece financiarlo si ella cambia el conflicto central de su historia, tiene que decidir qué está dispuesta a sacrificar.</p>
     </div>
-    <div class="beat" data-a="0.56" data-b="1">
+    <div class="beat" data-a="0.4" data-b="0.6">
       <p class="label">Tema</p>
       <p class="tema">Las dificultades y decisiones que enfrentan los realizadores audiovisuales para sacar adelante sus proyectos dentro de la industria.</p>
     </div>
-  </section>
-
-  <section class="scene" id="corto" aria-label="El cortometraje">
-    <div class="beat onscene" data-a="0.08" data-b="0.95">
+    <div class="beat onscene" data-a="0.64" data-b="1">
       <p class="label" id="playerCap">Cortometraje completo</p>
       <p class="acts"><button class="act" type="button" data-panel="trailer">Reproducir</button></p>
       <p class="label">Marcadores de escena, abren el archivo</p>
@@ -90,10 +86,10 @@
   </section>
 
   <section class="scene" id="personajes" aria-label="Personajes">
-    <div class="beat" data-a="0.05" data-b="0.36">
+    <div class="beat" data-a="0.05" data-b="0.4">
       <p class="label">03 · Personajes</p>
       <h2>Quién es quién</h2>
-      <p>Toca un retrato para abrir su ficha.</p>
+      <p>Las fotos de su pared. Toca una para abrir su ficha.</p>
     </div>
     <div class="beat onscene" data-a="0.42" data-b="0.7">
       <ul class="cast-list" id="castList"></ul>
@@ -211,7 +207,7 @@
 
 <aside id="menu" aria-label="Escenas" hidden>
   <div class="menu-in">
-    <div class="menu-top"><p class="label">Escenas del recorrido</p><button class="x" type="button" id="menuClose" aria-label="Cerrar">×</button></div>
+    <div class="menu-top"><p class="label">El recorrido</p><button class="x" type="button" id="menuClose" aria-label="Cerrar">×</button></div>
     <ol id="sceneList"></ol>
     <div class="sim">
       <p class="label">Demo: simula la semana</p>

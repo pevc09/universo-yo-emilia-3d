@@ -113,7 +113,7 @@ export function cuarto({ CHAPTERS, SEED_NOTES }) {
   const lap = new THREE.Group(); lap.position.set(0.22, dy, dz - 0.03); lap.rotation.y = 0.06; g.add(lap);
   box(lap, 0.36, 0.016, 0.25, mat('#9a9da3', { rough: 0.35, metal: 0.8 }), 0, 0.008, 0);
   const lid = new THREE.Group(); lid.position.set(0, 0.016, -0.125); lid.rotation.x = -0.28; lap.add(lid);
-  box(lid, 0.36, 0.24, 0.01, mat('#8d9096', { rough: 0.35, metal: 0.8 }), 0, 0.12, -0.006); quad(lid, 0.34, 0.215, glow(scr, 0.82), 0, 0.122, 0.001);
+  box(lid, 0.36, 0.24, 0.01, mat('#8d9096', { rough: 0.35, metal: 0.8 }), 0, 0.12, -0.006); const lapScreen = quad(lid, 0.34, 0.215, glow(scr, 0.82), 0, 0.122, 0.001);
   /* lámpara de escritorio */
   cyl(g, 0.075, 0.085, 0.02, metal, -0.5, dy + 0.01, dz - 0.16, 20);
   const arm = box(g, 0.016, 0.42, 0.016, metal, -0.47, dy + 0.21, dz - 0.14); arm.rotation.z = -0.22;
@@ -239,7 +239,7 @@ export function cuarto({ CHAPTERS, SEED_NOTES }) {
 
   let wk = 5;
   return {
-    group: g, addPublicNote,
+    group: g, addPublicNote, lapScreen,
     setWeek(w) { wk = w; castingParts.forEach(o => o.visible = w >= 1); pagina.visible = w >= 5; },
     rigs: {
       archivo: {

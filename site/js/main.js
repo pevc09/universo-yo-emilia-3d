@@ -15,14 +15,14 @@ const smooth = u => { u = Math.min(1, Math.max(0, u)); return u * u * (3 - 2 * u
 const week = () => getWeek();
 
 /* ---------- la pista de scroll ---------- */
-const VH = small ? 135 : 160;
+const VH = small ? 125 : 150;
 SCENES.forEach(s => { $('#' + s.id).style.height = s.w * VH + 'vh'; });
 const beats = SCENES.map(s => $$('#' + s.id + ' .beat').map(el => ({ el, a: +el.dataset.a, b: +el.dataset.b })));
 const SECS = SCENES.filter((s, i) => SCENES.findIndex(x => x.sec === s.sec) === i);
 
 /* ---------- navegación ---------- */
 $('#escaleta').innerHTML = SECS.map((s, i) => `<a href="#${s.id}" data-goto="${s.id}" data-sec="${s.sec}" style="--c:${NOTE[i]}"><span>${s.nav}</span><i></i></a>`).join('');
-$('#sceneList').innerHTML = SCENES.map((s, i) => `<li><a href="#${s.id}" data-goto="${s.id}"><span class="thumb" style="background-image:url(videos/${s.id}.jpg)"><video muted loop playsinline preload="none" data-src="videos/${s.id}.mp4"></video></span><span><small>ESC. ${i + 1} · ${s.slug}</small><b>${s.nav}</b></span></a></li>`).join('');
+$('#sceneList').innerHTML = SCENES.map((s, i) => `<li><a href="#${s.id}" data-goto="${s.id}"><span class="thumb" style="background-image:url(videos/${s.id}.jpg)"><video muted loop playsinline preload="none" data-src="videos/${s.id}.mp4"></video></span><span><small>${s.place}</small><b>${s.nav}</b></span></a></li>`).join('');
 const maxScroll = () => document.documentElement.scrollHeight - innerHeight;
 let jump = false;
 function goTo(id, at = 0.1) {
@@ -183,13 +183,7 @@ if (!stage) {
       hotBox.appendChild(b); hots.push({ d, b });
     }
   }
-  let typer = null;
-  function setSlug(i) {
-    const s = SCENES[i]; $('#slugNum').textContent = `ESC. ${i + 1}`;
-    clearInterval(typer); const el = $('#slug');
-    if (reduce) { el.textContent = s.slug; return; }
-    let k = 0; el.textContent = ''; typer = setInterval(() => { el.textContent = s.slug.slice(0, ++k); if (k >= s.slug.length) clearInterval(typer); }, 24);
-  }
+  function setSlug() {}
 
   let target = 0, p = 0;
   ScrollTrigger.create({ trigger: '#track', start: 'top top', end: 'bottom bottom', onUpdate: s => { target = s.progress; } });
@@ -214,7 +208,7 @@ if (!stage) {
       $$('#sceneList a').forEach(a => a.dataset.goto === sc.id ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current'));
       try { history.replaceState(null, '', '#' + sc.id); } catch (err) {}
       if (i >= 1 && vid.preload !== 'auto') { vid.preload = 'auto'; vid.load(); }
-      if (sc.id === 'corto') vid.play().catch(() => {}); else vid.pause();
+      if (sc.id === "historia" || sc.id === "estreno") vid.play().catch(() => {}); else vid.pause();
     }
     if (hotScene !== sc.id) { buildHots(sc); hotScene = sc.id; }
     /* el teaser llena la pantalla al inicio y se disuelve hacia la calle */
