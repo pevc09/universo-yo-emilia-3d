@@ -7,26 +7,25 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
-import { calle, cafeteria, restaurante } from './spaces-a.js';
-import { cineclub, cuarto, melon } from './spaces-b.js';
+import { calle } from './spaces-a.js';
+import { cuarto } from './spaces-b.js';
 import { dress } from './spaces-c.js';
-import { CAST, CHAPTERS, SEED_NOTES } from './data.js';
+import { CHAPTERS, SEED_NOTES } from './data.js';
 
 /* Las escenas en orden de scroll, agrupadas en las siete secciones del sitio (`sec`). `w` = cuánto scroll ocupa. */
 export const SCENES = [
-  { id: 'inicio', sec: 'inicio', space: 'calle', w: 2.2, slug: 'EXT. LIMA – ATARDECER', nav: 'Inicio' },
-  { id: 'historia', sec: 'historia', space: 'cafeteria', w: 1.5, slug: 'INT. CAFETERÍA – DÍA', nav: 'La historia' },
-  { id: 'corto', sec: 'historia', space: 'cineclub', w: 1.5, slug: 'INT. CINECLUB – NOCHE', nav: 'La historia' },
-  { id: 'personajes', sec: 'personajes', space: 'restaurante', w: 1.8, slug: 'INT. RESTAURANTE – TARDE', nav: 'Personajes' },
-  { id: 'archivo', sec: 'archivo', space: 'cuarto', w: 2.8, slug: 'INT. CUARTO DE EMILIA – ATARDECER', nav: 'El archivo de Emilia' },
-  { id: 'mural', sec: 'archivo', space: 'cuarto', w: 1.9, slug: 'INT. CUARTO DE EMILIA – NOCHE', nav: 'El archivo de Emilia' },
-  { id: 'universo', sec: 'universo', space: 'calle', w: 2.8, slug: 'EXT. CALLE DE LIMA – NOCHE', nav: 'Universo transmedia' },
-  { id: 'estreno', sec: 'estreno', space: 'melon', w: 1.9, slug: 'INT. SALA DEL ESTRENO – NOCHE', nav: 'El estreno' },
-  { id: 'equipo', sec: 'equipo', space: 'calle', w: 1.5, slug: 'EXT. LIMA – AMANECER', nav: 'Equipo y contacto' }
+  { id: 'inicio', sec: 'inicio', space: 'cuarto', w: 2.0, place: 'El cuarto de Emilia, al atardecer', nav: 'Inicio' },
+  { id: 'historia', sec: 'historia', space: 'cuarto', w: 1.5, place: 'Su escritorio', nav: 'La historia' },
+  { id: 'personajes', sec: 'personajes', space: 'cuarto', w: 1.3, place: 'Las fotos de su pared', nav: 'Personajes' },
+  { id: 'archivo', sec: 'archivo', space: 'cuarto', w: 2.3, place: 'Sus objetos, del atardecer a la noche', nav: 'El archivo de Emilia' },
+  { id: 'mural', sec: 'archivo', space: 'cuarto', w: 1.5, place: 'El mural', nav: 'El mural' },
+  { id: 'universo', sec: 'universo', space: 'calle', w: 2.2, place: 'Lima de noche', nav: 'Universo transmedia' },
+  { id: 'estreno', sec: 'estreno', space: 'calle', w: 1.4, place: 'Función al aire libre', nav: 'El estreno' },
+  { id: 'equipo', sec: 'equipo', space: 'calle', w: 1.2, place: 'Lima al amanecer', nav: 'Equipo y contacto', cut: true }
 ];
 { let a = 0; const tot = SCENES.reduce((s, x) => s + x.w, 0); SCENES.forEach(s => { s.a = a / tot; a += s.w; s.b = a / tot; }); }
-/* ¿Hay corte (fundido a negro) entre dos escenas vecinas? Solo si cambia el espacio. */
-export const cutBetween = (i, j) => { const A = SCENES[i], B = SCENES[j]; return !A || !B || A.space !== B.space || A.space === 'calle'; };
+/* ¿Hay corte (fundido a negro) entre dos escenas vecinas? Solo si cambia el espacio o la escena lo pide. */
+export const cutBetween = (i, j) => { const A = SCENES[i], B = SCENES[j]; return !A || !B || A.space !== B.space || !!B.cut; };
 
 const GradeShader = {
   uniforms: { tDiffuse: { value: null }, temp: { value: 0 }, sat: { value: 1 }, vig: { value: 1 }, time: { value: 0 }, grain: { value: 0.06 }, fade: { value: 1 }, ca: { value: 0.012 } },
@@ -70,7 +69,7 @@ export function createStage(canvas, { width, height, dpr = 1, shadows = 2048, vi
   scene.add(hemi, key, key.target, ...pts);
   const lights = { hemi, key, pts };
 
-  const spaces = { calle: calle(), cafeteria: cafeteria(), restaurante: restaurante(CAST), cineclub: cineclub(), cuarto: cuarto({ CHAPTERS, SEED_NOTES }), melon: melon() };
+  const spaces = { calle: calle(), cuarto: cuarto({ CHAPTERS, SEED_NOTES }) };
   dress(spaces);
   for (const s of Object.values(spaces)) { s.group.visible = false; scene.add(s.group); }
 
@@ -152,7 +151,7 @@ export function createStage(canvas, { width, height, dpr = 1, shadows = 2048, vi
   }
   function setScreenVideo(el) {
     const t = new THREE.VideoTexture(el); t.colorSpace = THREE.SRGBColorSpace;
-    spaces.cineclub.screenMat.map = t; spaces.cineclub.screenMat.needsUpdate = true;
+    for (const m of [spaces.cuarto.lapScreen.material, spaces.calle.projMat]) { m.map = t; m.color.setScalar(1); m.needsUpdate = true; }
   }
   function warmup() { const keep = cur.id; for (const sc of SCENES) { show(sc.id); view(sc.id, 0.5); composer.render(); } cur.id = null; if (keep) show(keep); }
 

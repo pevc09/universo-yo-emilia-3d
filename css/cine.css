@@ -90,3 +90,14 @@
   .loader-go { flex-direction: column; }
 }
 body.lite #teaser, body.lite #bars, body.lite #simbar { display: none; }
+
+/* Títulos con la letra de pincel de la portada */
+.beat h2, .beat h3, .panel h3, #sceneList b, .loader-title { font-family: var(--f-brush); font-weight: 400; letter-spacing: .01em; line-height: 1.02; }
+.beat h2 { font-size: clamp(2.3rem, 5.2vw, 4rem); }
+.beat h3 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); }
+.panel h3 { font-size: 2rem; }
+.panel h3 i { font-style: normal; color: var(--accent); }
+#sceneList b { font-size: 1.3rem; }
+#sceneList small { font-family: var(--f-mono); }
+/* cabecera sin encabezado de escena */
+#hud { grid-template-columns: 1fr auto; }
