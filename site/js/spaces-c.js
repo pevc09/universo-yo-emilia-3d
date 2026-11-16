@@ -125,15 +125,15 @@ function dressRoom(sp) {
   };
   sp.cams = {
     /* teaser → el cuarto desde la puerta → las notas del público → el escritorio (la semana) */
-    inicio: [P(K.puerta, 0, 0.72), P(K.notas, 0.58, 0.22), P(K.escritorio, 0.89, 0.22)],
+    inicio: [P(K.puerta, 0, 0.72), P(K.notas, 0.58, 0.15), P(K.escritorio, 0.9, 0.16)],
     /* sinopsis frente al escritorio → el tema en la nota de la pared → el corto en la laptop */
-    historia: [P(K.escritorio, 0, 0.64), P(K.frase, 0.51, 0.22), P(K.laptop, 0.85, 0.3)],
+    historia: [P(K.escritorio, 0, 0.56), P(K.frase, 0.51, 0.15), P(K.laptop, 0.87, 0.24)],
     /* de la laptop a las polaroids, y ahí se queda */
     personajes: [P(K.laptop, 0, 0), P({ p: [0.1, 1.45, -0.4], t: [-2.6, 1.4, -0.2] }, 0.12), P(K.fotos, 0.6, 0.8)],
     /* tres vistas generales (películas y estante → escritorio y calendario → velador y ventana) → mural */
-    archivo: [P(K.fotos, 0, 0), P(K.izquierda, 0.18, 0.16), P(K.escritorioG, 0.45, 0.18), P(K.veladorG, 0.72, 0.16), P(K.mural, 0.96, 0.08)],
+    archivo: [P(K.fotos, 0, 0), P(K.izquierda, 0.18, 0.11), P(K.escritorioG, 0.45, 0.13), P(K.veladorG, 0.72, 0.11), P(K.mural, 0.97, 0.06)],
     /* las notas del público (la pregunta) → la escaleta en el corcho */
-    mural: [P(K.mural, 0, 0.08), P(K.notasCerca, 0.21, 0.26), P(K.corcho, 0.5, 0.14), P(K.corchoDer, 0.74, 0.16), P(K.muralLejos, 1, 0.16)]
+    mural: [P(K.mural, 0, 0.06), P(K.notasCerca, 0.21, 0.18), P(K.corcho, 0.5, 0.1), P(K.corchoDer, 0.74, 0.1), P(K.muralLejos, 1, 0.12)]
   };
   const BZ2 = BZ + 0.06, MX = 0.2, MY = 1.74;
   sp.hotspots.inicio = [{ id: 'mural', p: [-1.78, 1.52, BZ2], label: 'Pega tu nota en el mural', range: [0.47, 0.69] }];
@@ -254,18 +254,20 @@ function dressCity(sp) {
   const P = (o, at, hold = 0) => ({ ...o, at, hold });
   const eqView = { p: [0, 1.9, 0.6], t: [0, 1.3, -5.2], fov: 56 };
   sp.cams.universo = [
-    P({ p: [0, 13, 19], t: [0, 4, -6], fov: 58 }, 0, 0.08),
-    P({ p: [-1.5, 7.6, 9.5], t: [-8.5, 6.6, 1] }, 0.19, 0.1),
-    P({ p: [1.8, 5.6, 5.8], t: [8.5, 5.8, 2] }, 0.34, 0.1),
-    P({ p: [0.6, 3.4, 2.6], t: [-2.4, 6.8, -8], fov: 56 }, 0.56, 0.2),
-    P(eqView, 0.87, 0.26)
+    P({ p: [0, 13, 19], t: [0, 4, -6], fov: 58 }, 0.04, 0.08),
+    /* Modo Directora (TikTok): la pantalla vertical de la izquierda, de frente */
+    P({ p: [-1.8, 6.3, 5.6], t: [-8.5, 6.6, 1], fov: 56 }, 0.27, 0.08),
+    /* El otro lado de Ricardo (YouTube Shorts): la de la derecha */
+    P({ p: [1.8, 5.7, 6.6], t: [8.5, 5.8, 2], fov: 56 }, 0.44, 0.08),
+    P({ p: [0.6, 3.4, 2.6], t: [-2.4, 6.8, -8], fov: 56 }, 0.63, 0.12),
+    P(eqView, 0.88, 0.22)
   ];
   /* el estreno: la función al aire libre */
   sp.cams.estreno = [P(eqView, 0, 0.04), P({ p: [0, 1.7, 4.4], t: [0, 6.6, -8], fov: 50 }, 0.3, 0.3), P({ p: [0.6, 2.2, 3.0], t: [0, 7.2, -8], fov: 54 }, 0.78, 0.44)];
   sp.hotspots.universo = [
-    { id: 'pieza:0', p: [-8.4, 6.6, 1], label: 'Modo Directora', range: [0.12, 0.26] },
-    { id: 'pieza:1', p: [8.4, 5.8, 2], label: 'El otro lado de Ricardo', range: [0.27, 0.42] },
-    { id: 'pieza:2', p: [0, 2.6, -5.2], label: 'Miradas distintas', range: [0.72, 1] }
+    { id: 'pieza:0', p: [-8.4, 6.6, 1], label: 'Modo Directora', range: [0.17, 0.36] },
+    { id: 'pieza:1', p: [8.4, 5.8, 2], label: 'El otro lado de Ricardo', range: [0.36, 0.52] },
+    { id: 'pieza:2', p: [0, 2.6, -5.2], label: 'Miradas distintas', range: [0.74, 1] }
   ];
   sp.hotspots.estreno = [{ id: 'estreno', p: [0, 7.25, -7.9], label: 'Video resumen del evento', range: [0.15, 1] }];
   sp.projMat = projMat;

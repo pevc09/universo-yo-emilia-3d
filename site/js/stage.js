@@ -19,7 +19,7 @@ export const SCENES = [
   { id: 'personajes', sec: 'personajes', space: 'cuarto', w: 1.3, place: 'Las fotos de su pared', nav: 'Personajes' },
   { id: 'archivo', sec: 'archivo', space: 'cuarto', w: 2.5, place: 'Sus objetos, del atardecer a la noche', nav: 'El archivo de Emilia' },
   { id: 'mural', sec: 'archivo', space: 'cuarto', w: 1.5, place: 'El mural', nav: 'El mural' },
-  { id: 'universo', sec: 'universo', space: 'calle', w: 2.2, place: 'Lima de noche', nav: 'Universo transmedia' },
+  { id: 'universo', sec: 'universo', space: 'calle', w: 2.8, place: 'Lima de noche', nav: 'Universo transmedia' },
   { id: 'estreno', sec: 'estreno', space: 'calle', w: 1.4, place: 'Función al aire libre', nav: 'El estreno' },
   { id: 'equipo', sec: 'equipo', space: 'calle', w: 1.2, place: 'Lima al amanecer', nav: 'Equipo y contacto', cut: true }
 ];
@@ -136,7 +136,9 @@ export function createStage(canvas, { width, height, dpr = 1, shadows = 2048, vi
   const P = new THREE.Vector3(), Q = new THREE.Vector3(), R = new THREE.Vector3(), U = new THREE.Vector3();
   const FP = new THREE.Vector3(), FQ = new THREE.Vector3();
   /* fx = { k: 0..1, pose: {p, t, fov}, shift }: acercamiento a un objeto elegido, mezclado con el riel según k */
-  function view(id, t, look = { x: 0, y: 0 }, fx = null) {
+  /* cámara amortiguada: sigue al riel con inercia para que no haya tirones; salta solo al cambiar de espacio */
+  const sm = { pos: new THREE.Vector3(), tgt: new THREE.Vector3(), fov: 55, space: null };
+  function view(id, t, look = { x: 0, y: 0 }, fx = null, dt = 0) {
     const rl = rails[id]; t = Math.min(1, Math.max(0, t)); lastT = t;
     const s = rl.time(t);
     rl.pos.getPoint(s, P); rl.tgt.getPoint(s, Q);
@@ -146,13 +148,18 @@ export function createStage(canvas, { width, height, dpr = 1, shadows = 2048, vi
     if (k > 0) { FP.set(...fx.pose.p); FQ.set(...fx.pose.t); P.lerp(FP, k); Q.lerp(FQ, k); fov += ((fx.pose.fov || 55) - fov) * k; }
     if (camera.aspect < 1) fov = Math.min(88, fov * (1.18 + (1 - camera.aspect) * 0.55));
     /* en vertical el texto ocupa la mitad de abajo: la cámara mira un poco más abajo para que el sujeto quede arriba */
-    if (camera.aspect < 1) { const dist = P.distanceTo(Q); U.subVectors(P, Q).setY(0).normalize(); P.addScaledVector(U, Math.min(0.5, dist * 0.22)); Q.y -= dist * 0.24 * (1 - k * 0.6); }
+    if (camera.aspect < 1) { const dist = P.distanceTo(Q); U.subVectors(P, Q).setY(0).normalize(); P.addScaledVector(U, Math.min(0.5, dist * 0.22)); Q.y -= Math.min(0.9, dist * 0.24) * (1 - k * 0.6); }
     R.subVectors(Q, P).normalize(); U.set(0, 1, 0); R.cross(U).normalize();
     /* con la ficha abierta a la derecha (escritorio), el objeto se corre a la izquierda para que se vea */
     if (k > 0 && fx.shift) Q.addScaledVector(R, P.distanceTo(Q) * fx.shift * k);
-    camera.position.copy(P).addScaledVector(R, look.x * 0.07); camera.position.y += look.y * 0.04;
+    P.addScaledVector(R, look.x * 0.07); P.y += look.y * 0.04;
     Q.addScaledVector(R, look.x * 0.35); Q.y += look.y * 0.22;
-    camera.fov = fov; camera.updateProjectionMatrix(); camera.lookAt(Q);
+    const sc0 = SCENES.find(x => x.id === id), space = sc0.space;
+    if (!dt || sm.space !== space || (sc0.cut && sm.id !== id)) { sm.pos.copy(P); sm.tgt.copy(Q); sm.fov = fov; sm.space = space; }
+    else { const a = 1 - Math.exp(-dt * 4.2); sm.pos.lerp(P, a); sm.tgt.lerp(Q, a); sm.fov += (fov - sm.fov) * a; }
+    sm.id = id;
+    camera.position.copy(sm.pos);
+    camera.fov = sm.fov; camera.updateProjectionMatrix(); camera.lookAt(sm.tgt);
   }
 
   function render(time, fade = 1) {
