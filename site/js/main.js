@@ -104,9 +104,9 @@ document.addEventListener('click', e => {
   const d = a.dataset;
   if (d.goto) { e.preventDefault(); goTo(d.goto, d.goto === 'inicio' ? 0 : 0.1); return; }
   if (d.go) { e.preventDefault(); if (!d.open) closePanel(); goTo(d.go, d.open ? (d.go === 'mural' ? 0.2 : 0.55) : 0.1); }
-  if (d.open) { e.preventDefault(); openObject(d.open); }
-  if (d.panel) panels[d.panel]();
-  if (d.cast) panels.cast(+d.cast);
+  if (d.open) { e.preventDefault(); if (d.go) openObject(d.open); else focusThen(d.open, () => openObject(d.open)); }
+  if (d.panel) focusThen(d.panel, () => panels[d.panel]());
+  if (d.cast) focusThen('cast:' + d.cast, () => panels.cast(+d.cast));
   if (d.w) applyWeek(+d.w);
   if (d.wk) applyWeek(+d.wk);
   if (d.x) { cross = +d.x; drawCross(); }
@@ -117,6 +117,23 @@ $('#podPlay').addEventListener('click', () => { const b = $('#podPlay'); if (pod
 
 /* ---------- contenido que depende de la semana (igual que en el sitio original) ---------- */
 let stage = null, hotScene = null, cross = 0;
+/* ---------- acercamiento al objeto elegido ----------
+   Al tocar un objeto, la cámara vuela hacia él y luego se abre su ficha; al cerrarla, vuelve a la vista general. */
+const fx = { k: 0, pose: null, shift: 0 };
+function focusThen(id, open) {
+  const pose = stage && stage.current.space && stage.current.space.focus && stage.current.space.focus[id];
+  const obj = OBJECTS.find(o => o.id === id);
+  if (!pose || (obj && obj.week > week())) { open(); return; }
+  fx.pose = pose; fx.shift = innerWidth > 760 ? 0.3 : 0;
+  document.body.classList.add('focusing');
+  gsap.to(fx, { k: 1, duration: reduce ? 0 : 1.1, ease: 'power2.inOut', overwrite: true });
+  gsap.delayedCall(reduce ? 0 : 0.8, open);
+}
+function releaseFocus() {
+  document.body.classList.remove('focusing');
+  if (fx.k > 0) gsap.to(fx, { k: 0, duration: reduce ? 0 : 1.0, ease: 'power2.inOut', overwrite: true, onComplete: () => { fx.pose = null; } });
+}
+new MutationObserver(() => { if ($('#scrim').hidden) releaseFocus(); }).observe($('#scrim'), { attributes: true, attributeFilter: ['hidden'] });
 function drawCross() { const c = CROSS[cross]; $('#xinfo').innerHTML = `<span class="kicker">Cruce ${cross + 1} · ${c[1]}</span><b>${c[0]}</b><p>${c[2]}</p>`; $$('[data-x]').forEach(b => b.setAttribute('aria-pressed', +b.dataset.x === cross)); }
 function renderWeek() {
   const n = week(), w = WEEKS[n], o = w.obj ? OBJECTS.find(x => x.id === w.obj) : null;
@@ -200,7 +217,7 @@ if (!stage) {
       const b = document.createElement('button'); b.type = 'button';
       b.className = 'hot' + (locked ? ' locked' : '') + (obj && week() > 0 && WEEKS[week()].obj === d.id ? ' new' : '');
       b.innerHTML = `<i></i><span>${esc(locked ? 'Semana ' + obj.week : d.label || (obj ? obj.name : d.id))}</span>`;
-      b.addEventListener('click', () => { if (obj) openObject(d.id); else { const [k, v] = d.id.split(':'); panels[k](v === undefined ? undefined : +v); } });
+      b.addEventListener('click', () => focusThen(d.id, () => { if (obj) openObject(d.id); else { const [k, v] = d.id.split(':'); panels[k](v === undefined ? undefined : +v); } }));
       hotBox.appendChild(b); hots.push({ d, b });
     }
   }
@@ -237,7 +254,7 @@ if (!stage) {
     const tv = i === 0 ? 1 - smooth((t - 0.2) / 0.16) : 0;
     teaser.style.opacity = (tv * intro.f).toFixed(3); teaser.style.transform = `scale(${(1 + (i === 0 ? t : 1) * 0.5).toFixed(4)})`; teaser.style.visibility = tv > 0.001 ? 'visible' : 'hidden';
     if (tv > 0.001 && teaser.paused && entered) teaser.play().catch(() => {}); else if (tv <= 0.001 && !teaser.paused) teaser.pause();
-    if (tv * intro.f < 0.999) { stage.view(sc.id, t, look); stage.render(time, fade); }
+    if (tv * intro.f < 0.999) { stage.view(sc.id, t, look, fx); stage.render(time, fade); }
     beats.forEach((list, j) => list.forEach(b => b.el.classList.toggle('on', entered && j === i && t >= b.a && t < b.b && fade > 0.55)));
     const busy = !$('#scrim').hidden || !$('#menu').hidden;
     for (const h of hots) {
