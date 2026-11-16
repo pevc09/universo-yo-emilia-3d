@@ -135,14 +135,17 @@
     <div class="beat wide onscene" data-a="0.35" data-b="0.64">
       <p class="label">Línea de tiempo</p>
       <h3>Qué pasa antes, durante y después del corto</h3>
-      <div class="lanes-scroll"><div class="lanes" id="lanes"></div></div>
-      <div class="vtl" id="vtl"></div>
-      <div class="xinfo" id="xinfo"></div>
+      <p class="m-only">Está encendida en las ventanas del edificio: cada piso es una pieza, y las ventanas naranjas son los cruces entre ellas.</p>
+      <div class="lanes-scroll m-hide"><div class="lanes" id="lanes"></div></div>
+      <div class="vtl m-hide" id="vtl"></div>
+      <div class="xinfo m-hide" id="xinfo"></div>
+      <p class="acts m-only"><button class="act" type="button" data-panel="linea">Ver la línea de tiempo y los cruces</button></p>
     </div>
     <div class="beat wide onscene two-col" data-a="0.69" data-b="1">
       <div class="stack">
         <p class="label">Cinco semanas, una pregunta cada una</p>
-        <div class="weeks" id="weeks"></div>
+        <div class="weeks m-hide" id="weeks"></div>
+        <p class="acts m-only"><button class="act ghost" type="button" data-panel="semanas">Ver el calendario de estrenos</button></p>
       </div>
       <div class="stack">
         <div class="card stack">
@@ -162,10 +165,12 @@
       <p>Evidencia del evento: proyección del corto, conversatorio y brindis.</p>
     </div>
     <div class="beat wide onscene two-col" data-a="0.46" data-b="1">
-      <div class="stack">
+      <div class="stack strip-wrap">
         <p class="label">Testimonios</p>
-        <div class="card"><p class="quote">“Aquí va un testimonio breve de un asistente sobre el corto y el conversatorio.”</p><p class="small muted">Nombre · asistente</p></div>
-        <div class="card"><p class="quote">“Aquí va un testimonio breve de un invitado del conversatorio.”</p><p class="small muted">Nombre · invitado</p></div>
+        <div class="strip testimonios">
+          <div class="card"><p class="quote">“Aquí va un testimonio breve de un asistente sobre el corto y el conversatorio.”</p><p class="small muted">Nombre · asistente</p></div>
+          <div class="card"><p class="quote">“Aquí va un testimonio breve de un invitado del conversatorio.”</p><p class="small muted">Nombre · invitado</p></div>
+        </div>
       </div>
       <div class="stack">
         <a class="goto" href="#mural" data-goto="mural"><span>Las notas del mural físico ya están en el cuarto de Emilia</span><b>→</b></a>

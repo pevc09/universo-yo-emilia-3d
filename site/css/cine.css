@@ -101,3 +101,53 @@ body.lite #teaser, body.lite #bars, body.lite #simbar { display: none; }
 #sceneList small { font-family: var(--f-mono); }
 /* cabecera sin encabezado de escena */
 #hud { grid-template-columns: 1fr auto; }
+
+/* ================= VERSIÓN CELULAR ================= */
+.m-only { display: none; }
+.strip.testimonios { display: grid; gap: 10px; }
+@media (max-width: 760px) {
+  .m-hide { display: none !important; }
+  .m-only { display: block; }
+  p.acts.m-only { display: flex; }
+  /* el texto vive abajo, compacto, y deja ver la escena arriba */
+  .beat { left: 14px; width: calc(100vw - 28px - 22px); gap: .5rem; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); max-height: 62vh; overflow-y: auto; overscroll-behavior: contain; }
+  .beat.wide { width: calc(100vw - 28px - 22px); }
+  .beat h1 { font-size: clamp(3.4rem, 18vw, 4.6rem); }
+  .beat h2 { font-size: clamp(1.9rem, 9vw, 2.4rem); }
+  .beat h3 { font-size: clamp(1.5rem, 7vw, 1.9rem); }
+  .beat p { font-size: .98rem; line-height: 1.4; }
+  .beat p.big { font-size: 1.25rem; }
+  .beat .lema { font-size: 1.15rem; }
+  .beat .tema { font-size: 1.15rem; }
+  .note.paste { font-size: 1.15rem; padding: 10px 12px; }
+  .act { font-size: .9rem; padding: .62em .9em .68em; }
+  .acts { gap: 10px; }
+  /* tarjetas en carrusel horizontal: se deslizan con el dedo */
+  .week-cards, .crew, .strip.testimonios, .onscene .steps { display: flex; gap: 10px; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 2px; margin-right: -14px; padding-right: 14px; }
+  .week-cards::-webkit-scrollbar, .crew::-webkit-scrollbar, .strip::-webkit-scrollbar, .onscene .steps::-webkit-scrollbar { display: none; }
+  .week-cards > *, .crew > *, .strip.testimonios > * { flex: 0 0 74%; scroll-snap-align: start; }
+  .onscene .steps > * { flex: 0 0 42%; scroll-snap-align: start; }
+  .rel b { font-size: .98rem; } .rel.newobj b { font-size: 1.15rem; }
+  .live-notes .note { font-size: 1.08rem; padding: 9px 12px; }
+  .live-notes .note:nth-child(3) { display: none; }
+  .cast-list button { padding: .45em .7em; font-size: .95rem; }
+  .objlist button { font-size: .85rem; padding: .32em .75em; }
+  .markers button { font-size: .82rem; }
+  .onscene .card { padding: 12px 14px; }
+  .beat.two-col { gap: 12px; }
+  .pod-row .wave { min-width: 0; }
+  /* créditos y contacto */
+  .credit-roles { gap: .2rem; }
+  .credit-roles div { grid-template-columns: 1fr; gap: 0; }
+  .credit-roles dt { font-size: .7rem; text-align: left; }
+  .credit-roles dd { font-size: 1.02rem; }
+  .contact textarea { min-height: 64px; }
+  #equipo .meta + .meta { display: none; }
+  /* cabecera y escaleta */
+  .brand { font-size: 1.1rem; }
+  #soundBtn, #menuBtn { font-size: .78rem; padding: .34em .65em; }
+  #escaleta { right: 6px; gap: 7px; }
+  #escaleta a i { width: 10px; height: 10px; }
+  .hot span { font-size: 1rem; }
+  .loader-title { font-size: 3.4rem; }
+}

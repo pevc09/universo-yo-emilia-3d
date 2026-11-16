@@ -124,6 +124,8 @@ export function createStage(canvas, { width, height, dpr = 1, shadows = 2048, vi
     const f = t * (rl.fov.length - 1), i = Math.min(rl.fov.length - 2, Math.floor(f)), u = f - i, e = u * u * (3 - 2 * u);
     let fov = rl.fov[i] + (rl.fov[i + 1] - rl.fov[i]) * e;
     if (camera.aspect < 1) fov = Math.min(88, fov * (1.18 + (1 - camera.aspect) * 0.55));
+    /* en vertical el texto ocupa la mitad de abajo: la cámara mira un poco más abajo para que el sujeto quede arriba */
+    if (camera.aspect < 1) { const dist = P.distanceTo(Q); U.subVectors(P, Q).setY(0).normalize(); P.addScaledVector(U, Math.min(0.5, dist * 0.22)); Q.y -= dist * 0.24; }
     R.subVectors(Q, P).normalize(); U.set(0, 1, 0); R.cross(U).normalize();
     camera.position.copy(P).addScaledVector(R, look.x * 0.07); camera.position.y += look.y * 0.04;
     Q.addScaledVector(R, look.x * 0.35); Q.y += look.y * 0.22;
