@@ -86,21 +86,57 @@ function dressRoom(sp) {
     archivo: { ...late, from: 0.42, until: 0.92, to: { bg: night.bg, hemi: night.hemi, key: night.key, grade: night.grade, bloom: night.bloom, pts: nightPts } },
     mural: night
   };
-  /* un solo plano secuencia: cada escena empieza donde terminó la anterior */
+  /* Un solo plano secuencia. Cada punto es una parada: la cámara llega (`at`) y se queda quieta (`hold`)
+     mientras se lee el texto que habla de lo que se ve. Los tiempos coinciden con data-a/data-b de index.html. */
+  const P = (o, at, hold = 0) => ({ ...o, at, hold });
   const K = {
     puerta: { p: [-1.7, 1.62, 2.0], t: [2.3, 1.45, 0.3], fov: 60 },
-    notas: { p: [-0.9, 1.6, 0.6], t: [-1.75, 1.8, -2.3], fov: 56 },
+    notas: { p: [-1.15, 1.72, -0.35], t: [-1.75, 1.85, -2.3], fov: 50 },
+    escritorio: { p: [0.9, 1.6, 0.9], t: [0.1, 1.3, -2.2], fov: 56 },
+    frase: { p: [1.35, 1.4, -1.0], t: [1.35, 1.28, -2.3], fov: 46 },
     laptop: { p: [0.2, 1.16, -1.22], t: [0.22, 0.93, -2.1], fov: 40 },
     fotos: { p: [-0.9, 1.6, 1.15], t: [-2.6, 1.68, 1.2], fov: 52 },
-    mural: { p: [0.2, 1.55, -0.15], t: [0.25, 1.62, -2.3] }
+    pared: { p: [0.75, 1.5, 1.0], t: [-2.6, 1.5, -0.6] },
+    mesa: { p: [0.4, 1.42, -0.1], t: [0.15, 0.95, -1.95] },
+    mesita: { p: [-0.2, 1.4, -0.55], t: [2.3, 0.6, -0.8] },
+    mural: { p: [0.2, 1.55, -0.15], t: [0.25, 1.62, -2.3] },
+    notasCerca: { p: [-1.5, 1.86, -0.95], t: [-1.78, 1.84, -2.3], fov: 44 },
+    corcho: { p: [-0.25, 1.82, -1.25], t: [-0.3, 1.82, -2.3], fov: 40 },
+    corchoDer: { p: [0.75, 1.78, -1.25], t: [0.8, 1.74, -2.3], fov: 40 },
+    muralLejos: { p: [0.2, 1.62, -0.5], t: [0.2, 1.7, -2.3] }
   };
   sp.cams = {
-    inicio: [K.puerta, { p: [-1.3, 1.6, 1.7], t: [2.4, 1.4, 0.1] }, { p: [-0.8, 1.6, 1.3], t: [0.6, 1.4, -2.2] }, K.notas],
-    historia: [K.notas, { p: [-0.3, 1.5, -0.2], t: [0.2, 1.1, -2.1] }, { p: [0.15, 1.3, -0.8], t: [0.22, 1.0, -2.1], fov: 46 }, K.laptop],
-    personajes: [K.laptop, { p: [0.4, 1.45, -0.6], t: [-2.6, 1.4, -0.2] }, { p: [-0.2, 1.55, 0.6], t: [-2.6, 1.62, 1.0] }, K.fotos],
-    archivo: [K.fotos, { p: [0.75, 1.5, 1.0], t: [-2.6, 1.5, -0.6] }, { p: [0.4, 1.42, -0.1], t: [0.15, 0.95, -1.95] }, { p: [-0.2, 1.4, -0.55], t: [2.3, 0.6, -0.8] }, K.mural],
-    mural: sp.cams.mural
+    /* teaser → el cuarto desde la puerta → las notas del público → el escritorio (la semana) */
+    inicio: [P(K.puerta, 0, 0.72), P(K.notas, 0.58, 0.22), P(K.escritorio, 0.89, 0.22)],
+    /* sinopsis frente al escritorio → el tema en la nota de la pared → el corto en la laptop */
+    historia: [P(K.escritorio, 0, 0.64), P(K.frase, 0.51, 0.22), P(K.laptop, 0.85, 0.3)],
+    /* de la laptop a las polaroids, y ahí se queda */
+    personajes: [P(K.laptop, 0, 0), P({ p: [0.1, 1.45, -0.4], t: [-2.6, 1.4, -0.2] }, 0.12), P(K.fotos, 0.6, 0.8)],
+    /* recorrido por los objetos: películas y cuaderno → escritorio → velador y calendario → mural */
+    archivo: [P(K.fotos, 0, 0), P(K.pared, 0.22, 0.14), P(K.mesa, 0.45, 0.14), P(K.mesita, 0.68, 0.14), P(K.mural, 0.95, 0.1)],
+    /* las notas del público (la pregunta) → la escaleta en el corcho */
+    mural: [P(K.mural, 0, 0.08), P(K.notasCerca, 0.21, 0.26), P(K.corcho, 0.5, 0.14), P(K.corchoDer, 0.74, 0.16), P(K.muralLejos, 1, 0.16)]
   };
+  const BZ2 = BZ + 0.06, MX = 0.2, MY = 1.74;
+  sp.hotspots.inicio = [{ id: 'mural', p: [-1.78, 1.52, BZ2], label: 'Pega tu nota en el mural', range: [0.47, 0.69] }];
+  sp.hotspots.historia = [{ id: 'trailer', p: [0.22, 0.9, -2.02], label: 'Reproducir el corto', range: [0.7, 1] }];
+  sp.hotspots.personajes.forEach(h => { h.range = [0.2, 1]; });
+  sp.hotspots.archivo = [
+    { id: 'pared', p: [-W / 2 + 0.05, 1.6, -0.88], range: [0.12, 0.33] },
+    { id: 'cuaderno', p: [-W / 2 + 0.19, 1.0, 0.82], range: [0.12, 0.33] },
+    { id: 'carpeta', p: [-0.14, dy + 0.06, dz + 0.13], range: [0.36, 0.56] },
+    { id: 'chat', p: [0.56, dy + 0.05, dz + 0.17], range: [0.36, 0.56] },
+    { id: 'pagina', p: [0.52, dy + 0.05, dz - 0.2], range: [0.36, 0.56] },
+    { id: 'escucha', p: [2.26, 0.6, -0.9], range: [0.59, 0.8] },
+    { id: 'dias', p: [1.78, 1.72, BZ + 0.05], range: [0.59, 0.8] },
+    { id: 'casting', p: [MX + 0.74, MY + 0.16, BZ2], range: [0.86, 1] },
+    { id: 'mural', p: [MX - 0.2, MY + 0.02, BZ2], range: [0.86, 1] }
+  ];
+  sp.hotspots.mural = [
+    { id: 'mural', p: [-1.78, 1.52, BZ2], label: 'Pega tu nota en el mural', range: [0.08, 0.36] },
+    { id: 'casting', p: [MX + 0.74, MY + 0.16, BZ2], range: [0.64, 0.86] },
+    { id: 'dias', p: [1.78, 1.72, BZ + 0.05], range: [0.9, 1] }
+  ];
   hook(sp, 'update', (time, l, t, id) => {
     const k = id === 'mural' ? 1 : id === 'archivo' ? smooth((t - 0.42) / 0.5) : 0;
     sky.material.opacity = 1 - k; ray.opacity = 0.2 * (1 - k); d(time);
@@ -196,15 +232,24 @@ function dressCity(sp) {
     pts: [[-7.4, 6.6, 1, '#25f4ee', 40, 12], [7.4, 5.8, 2, '#ff4b5c', 40, 12], [0, 2.0, -4.6, '#1ed760', 14, 9], [0, 7.2, -6.6, '#ffd9a0', 22, 10]] };
   sp.rigs.estreno = { ...nightBase, bg: '#0a0a14', grade: { temp: 0.06, sat: 1.12, vig: 1.15 }, bloom: 0.55, key: { p: [0, 5, 13], t: [0, 7, -8], c: '#dfe8ff', i: 900, angle: 0.32, pen: 0.6 },
     pts: [[0, 4.3, -1, '#ffcf8f', 16, 9], [0, 7.2, -6.4, '#dfe8ff', 26, 12], [-3.5, 4.2, 2, '#ffcf8f', 10, 8], [3.5, 4.2, 2, '#ffcf8f', 10, 8]] };
-  const fin = { p: [0, 2.0, 1.6], t: [0, 7.0, -8], fov: 56 };
-  sp.cams.universo = [{ p: [0, 13, 19], t: [0, 4, -6], fov: 58 }, { p: [-1.5, 7.6, 9.5], t: [-8.5, 6.6, 1] }, { p: [1.8, 5.6, 5.8], t: [8.5, 5.8, 2] }, { p: [0, 2.2, 3.4], t: [0, 1.4, -5.2] }, fin];
-  sp.cams.estreno = [fin, { p: [0, 1.7, 4.4], t: [0, 6.6, -8], fov: 50 }, { p: [0.6, 2.2, 3.0], t: [0, 7.2, -8], fov: 54 }, { p: [1.8, 1.6, 2.6], t: [-1.2, 0.9, -0.6], fov: 58 }];
-  sp.hotspots.universo = [
-    { id: 'pieza:0', p: [-8.4, 6.6, 1], label: 'Modo Directora', range: [0.12, 0.45] },
-    { id: 'pieza:1', p: [8.4, 5.8, 2], label: 'El otro lado de Ricardo', range: [0.3, 0.62] },
-    { id: 'pieza:2', p: [0, 2.6, -5.2], label: 'Miradas distintas', range: [0.55, 0.82] }
+  /* paradas: las pantallas (las 7 experiencias) → la fachada (línea de tiempo) → el ecualizador (semanas y podcast) */
+  const P = (o, at, hold = 0) => ({ ...o, at, hold });
+  const eqView = { p: [0, 1.9, 0.6], t: [0, 1.3, -5.2], fov: 56 };
+  sp.cams.universo = [
+    P({ p: [0, 13, 19], t: [0, 4, -6], fov: 58 }, 0, 0.08),
+    P({ p: [-1.5, 7.6, 9.5], t: [-8.5, 6.6, 1] }, 0.19, 0.1),
+    P({ p: [1.8, 5.6, 5.8], t: [8.5, 5.8, 2] }, 0.34, 0.1),
+    P({ p: [0.6, 3.4, 2.6], t: [-2.4, 6.8, -8], fov: 56 }, 0.56, 0.2),
+    P(eqView, 0.87, 0.26)
   ];
-  sp.hotspots.estreno = [{ id: 'estreno', p: [0, 7.25, -7.9], label: 'Video resumen del evento', range: [0.15, 0.8] }];
+  /* el estreno: la función al aire libre */
+  sp.cams.estreno = [P(eqView, 0, 0.04), P({ p: [0, 1.7, 4.4], t: [0, 6.6, -8], fov: 50 }, 0.3, 0.3), P({ p: [0.6, 2.2, 3.0], t: [0, 7.2, -8], fov: 54 }, 0.78, 0.44)];
+  sp.hotspots.universo = [
+    { id: 'pieza:0', p: [-8.4, 6.6, 1], label: 'Modo Directora', range: [0.12, 0.26] },
+    { id: 'pieza:1', p: [8.4, 5.8, 2], label: 'El otro lado de Ricardo', range: [0.27, 0.42] },
+    { id: 'pieza:2', p: [0, 2.6, -5.2], label: 'Miradas distintas', range: [0.72, 1] }
+  ];
+  sp.hotspots.estreno = [{ id: 'estreno', p: [0, 7.25, -7.9], label: 'Video resumen del evento', range: [0.15, 1] }];
   sp.projMat = projMat;
 
   hook(sp, 'enter', (id) => {

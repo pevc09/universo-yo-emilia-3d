@@ -87,7 +87,23 @@ export function createStage(canvas, { width, height, dpr = 1, shadows = 2048, vi
     rails[sc.id] = {
       pos: new THREE.CatmullRomCurve3(K.map(k => new THREE.Vector3(...k.p)), false, 'catmullrom', 0.35),
       tgt: new THREE.CatmullRomCurve3(K.map(k => new THREE.Vector3(...k.t)), false, 'catmullrom', 0.35),
-      fov: K.map(k => k.fov || 55)
+      fov: K.map(k => k.fov || 55),
+      time: timeline(K)
+    };
+  }
+  /* Paradas: cada punto de cámara puede tener `at` (cuándo llega, 0..1) y `hold` (cuánto scroll se queda quieta ahí).
+     Devuelve, para un t de scroll, en qué punto del riel está la cámara. Entre paradas se mueve con aceleración suave. */
+  function timeline(K) {
+    const n = K.length, at = K.map((k, i) => k.at ?? i / (n - 1)), h = K.map(k => k.hold ?? 0);
+    const st = at.map((a, i) => Math.max(0, a - h[i] / 2)), en = at.map((a, i) => Math.min(1, a + h[i] / 2));
+    return t => {
+      if (t <= en[0]) return 0;
+      if (t >= st[n - 1]) return 1;
+      for (let k = 0; k < n - 1; k++) {
+        if (t >= st[k] && t <= en[k]) return k / (n - 1);
+        if (t > en[k] && t < st[k + 1]) { const u = (t - en[k]) / (st[k + 1] - en[k]); return (k + u * u * (3 - 2 * u)) / (n - 1); }
+      }
+      return 1;
     };
   }
 
@@ -120,8 +136,9 @@ export function createStage(canvas, { width, height, dpr = 1, shadows = 2048, vi
   const P = new THREE.Vector3(), Q = new THREE.Vector3(), R = new THREE.Vector3(), U = new THREE.Vector3();
   function view(id, t, look = { x: 0, y: 0 }) {
     const rl = rails[id]; t = Math.min(1, Math.max(0, t)); lastT = t;
-    rl.pos.getPoint(t, P); rl.tgt.getPoint(t, Q);
-    const f = t * (rl.fov.length - 1), i = Math.min(rl.fov.length - 2, Math.floor(f)), u = f - i, e = u * u * (3 - 2 * u);
+    const s = rl.time(t);
+    rl.pos.getPoint(s, P); rl.tgt.getPoint(s, Q);
+    const f = s * (rl.fov.length - 1), i = Math.min(rl.fov.length - 2, Math.floor(f)), u = f - i, e = u * u * (3 - 2 * u);
     let fov = rl.fov[i] + (rl.fov[i + 1] - rl.fov[i]) * e;
     if (camera.aspect < 1) fov = Math.min(88, fov * (1.18 + (1 - camera.aspect) * 0.55));
     /* en vertical el texto ocupa la mitad de abajo: la cámara mira un poco más abajo para que el sujeto quede arriba */
