@@ -204,3 +204,8 @@ body.lite #teaser, body.lite #bars, body.lite #simbar { display: none; }
   .beat h1.brush-title img { width: 86vw; }
 }
 @media (prefers-reduced-motion: reduce) { .postit { transition: none; } }
+
+/* mientras la cámara vuela hacia un objeto elegido, se apartan los textos y los puntos */
+body.focusing .beat.on { opacity: 0; visibility: hidden; transition: opacity .3s, visibility 0s .3s; }
+body.focusing #hotspots { opacity: 0; transition: opacity .3s; }
+#hotspots { transition: opacity .4s; }
