@@ -34,6 +34,13 @@ y abrir http://localhost:8377
 
 - `?lite` al final de la dirección fuerza la versión sin 3D (la misma que ven los equipos sin WebGL).
 
+## Publicación
+En línea: https://pevc09.github.io/universo-yo-emilia-3d/ (GitHub Pages, rama `gh-pages`, que contiene solo la carpeta `site/`).
+Para publicar cambios después de hacer commit:
+
+    git subtree split --prefix site -b gh-pages
+    git push -f origin gh-pages
+
 ## Regenerar los videos
 Con el servidor local abierto:
 - `http://localhost:8377/teaser.html?rec=1` — graba el teaser (12 s) a partir de `img/teaser.jpg`.
